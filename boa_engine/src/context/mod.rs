@@ -103,6 +103,7 @@ impl Default for Context {
                 trace: false,
                 stack_size_limit: 1024,
                 cu_cost: 0,
+                cu_limit: None,
             },
         };
 
@@ -116,6 +117,22 @@ impl Default for Context {
 }
 
 impl Context {
+     /// Create a new `Context`.
+     #[inline]
+     pub fn new_sk_context(cu_limit: u64) -> Self {
+         Self {
+            vm: Vm {
+                frame: None,
+                stack: Vec::with_capacity(1024),
+                trace: false,
+                stack_size_limit: 1024,
+                cu_cost: 0,
+                cu_limit: Some(cu_limit),
+            },
+            ..Self::default()
+         }
+     }
+
     /// Create a new `Context`.
     #[inline]
     pub fn new(interner: Interner) -> Self {
