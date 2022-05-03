@@ -4,7 +4,7 @@ use wasm_bindgen_test::__rt::js_console_log;
 
 #[warn(unreachable_patterns)]
 #[allow(clippy::match_same_arms)]
-pub(crate) fn as_cost(opcode: Opcode) -> u128 {
+pub(crate) fn as_cost(opcode: Opcode) -> u64 {
     match opcode {
         Opcode::Pop => 2,
         Opcode::Dup => 3,
