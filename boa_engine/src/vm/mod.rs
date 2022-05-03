@@ -20,8 +20,11 @@ use std::{convert::TryInto, mem::size_of, ops::Neg, time::Instant};
 mod call_frame;
 mod code_block;
 mod opcode;
+mod opcode_cu;
 
 pub use {call_frame::CallFrame, code_block::CodeBlock, opcode::Opcode};
+
+use opcode_cu::as_cost;
 
 pub(crate) use {
     call_frame::{FinallyReturn, GeneratorResumeKind, TryStackEntry},
@@ -40,6 +43,7 @@ pub struct Vm {
     pub(crate) stack: Vec<JsValue>,
     pub(crate) trace: bool,
     pub(crate) stack_size_limit: usize,
+    pub(crate) cu_cost: u128,
 }
 
 impl Vm {
@@ -142,7 +146,6 @@ impl Context {
         };
 
         let _timer = Profiler::global().start_event(opcode.as_instruction_str(), "vm");
-        js_console_log(&format!("opcode: {}", opcode.as_str()));
 
         match opcode {
             Opcode::Nop => {}
@@ -1801,7 +1804,8 @@ impl Context {
                 }
             }
         }
-
+        self.vm.cu_cost += as_cost(opcode);
+        js_console_log(&format!("opcode: {}, cost: {}", opcode.as_str(), &self.vm.cu_cost.to_string()));
         Ok(ShouldExit::False)
     }
 
