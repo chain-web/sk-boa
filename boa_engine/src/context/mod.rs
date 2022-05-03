@@ -107,28 +107,6 @@ pub struct Context {
 impl Default for Context {
     fn default() -> Self {
         ContextBuilder::default().build()
-        let mut context = Self {
-            realm: Realm::create(),
-            interner: Interner::default(),
-            #[cfg(feature = "console")]
-            console: Console::default(),
-            intrinsics: Intrinsics::default(),
-            strict: false,
-            vm: Vm {
-                frame: None,
-                stack: Vec::with_capacity(1024),
-                trace: false,
-                stack_size_limit: 1024,
-                cu_cost: 0,
-            },
-        };
-
-        // Add new builtIns to Context Realm
-        // At a later date this can be removed from here and called explicitly,
-        // but for now we almost always want these default builtins
-        context.intrinsics.objects = IntrinsicObjects::init(&mut context);
-        context.create_intrinsics();
-        context
     }
 }
 
@@ -137,6 +115,9 @@ impl Context {
     /// the icu data provider.
     pub fn builder() -> ContextBuilder {
         ContextBuilder::default()
+    }
+    pub fn build_for_sk(cu_limit: u64) -> self {
+        ContextBuilder::default().build_for_sk(cu_limit)
     }
     /// Gets the string interner.
     #[inline]
@@ -858,6 +839,40 @@ impl ContextBuilder {
                 stack: Vec::with_capacity(1024),
                 trace: false,
                 stack_size_limit: 1024,
+                cu_cost: 0,
+                cu_limit: None,
+            },
+            #[cfg(feature = "intl")]
+            icu: self.icu.unwrap_or_else(|| {
+                // TODO: Replace with a more fitting default
+                icu::Icu::new(Box::new(icu_testdata::get_provider()))
+                    .expect("Failed to initialize default icu data.")
+            }),
+            promise_job_queue: VecDeque::new(),
+        };
+
+        // Add new builtIns to Context Realm
+        // At a later date this can be removed from here and called explicitly,
+        // but for now we almost always want these default builtins
+        context.intrinsics.objects = IntrinsicObjects::init(&mut context);
+        context.create_intrinsics();
+        context
+    }
+
+    pub fn build_for_sk(self, cu_limit: u64) -> Context {
+        let mut context = Context {
+            realm: Realm::create(),
+            interner: self.interner.unwrap_or_default(),
+            #[cfg(feature = "console")]
+            console: Console::default(),
+            intrinsics: Intrinsics::default(),
+            vm: Vm {
+                frame: None,
+                stack: Vec::with_capacity(1024),
+                trace: false,
+                stack_size_limit: 1024,
+                cu_cost: 0,
+                cu_limit: cu_limit, // only diff at sk boa
             },
             #[cfg(feature = "intl")]
             icu: self.icu.unwrap_or_else(|| {
