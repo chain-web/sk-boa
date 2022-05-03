@@ -107,6 +107,28 @@ pub struct Context {
 impl Default for Context {
     fn default() -> Self {
         ContextBuilder::default().build()
+        let mut context = Self {
+            realm: Realm::create(),
+            interner: Interner::default(),
+            #[cfg(feature = "console")]
+            console: Console::default(),
+            intrinsics: Intrinsics::default(),
+            strict: false,
+            vm: Vm {
+                frame: None,
+                stack: Vec::with_capacity(1024),
+                trace: false,
+                stack_size_limit: 1024,
+                cu_cost: 0,
+            },
+        };
+
+        // Add new builtIns to Context Realm
+        // At a later date this can be removed from here and called explicitly,
+        // but for now we almost always want these default builtins
+        context.intrinsics.objects = IntrinsicObjects::init(&mut context);
+        context.create_intrinsics();
+        context
     }
 }
 
