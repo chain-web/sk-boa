@@ -43,7 +43,8 @@ pub struct Vm {
     pub(crate) stack: Vec<JsValue>,
     pub(crate) trace: bool,
     pub(crate) stack_size_limit: usize,
-    pub(crate) cu_cost: u128,
+    pub(crate) cu_cost: u64,
+    pub(crate) cu_limit: Option<u64>,
 }
 
 impl Vm {
@@ -1806,6 +1807,9 @@ impl Context {
         }
         self.vm.cu_cost += as_cost(opcode);
         js_console_log(&format!("opcode: {}, cost: {}", opcode.as_str(), &self.vm.cu_cost.to_string()));
+        if self.vm.cu_cost > self.vm.cu_limit.unwrap_or(u64::MAX) {
+           return Err(JsValue::from("out of cu limit"));
+        }
         Ok(ShouldExit::False)
     }
 
