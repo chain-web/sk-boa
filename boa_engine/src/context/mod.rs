@@ -102,6 +102,7 @@ impl Default for Context {
                 stack: Vec::with_capacity(1024),
                 trace: false,
                 stack_size_limit: 1024,
+                cu_cost: 0,
             },
         };
 
