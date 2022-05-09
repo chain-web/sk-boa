@@ -29,6 +29,8 @@ pub(crate) use {
     opcode::BindingOpcode,
 };
 
+use wasm_bindgen_test::__rt::js_console_log;
+
 #[cfg(test)]
 mod tests;
 /// Virtual Machine.
@@ -140,6 +142,7 @@ impl Context {
         };
 
         let _timer = Profiler::global().start_event(opcode.as_instruction_str(), "vm");
+        js_console_log(&format!("opcode: {}", opcode.as_str()));
 
         match opcode {
             Opcode::Nop => {}
