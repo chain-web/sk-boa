@@ -116,7 +116,7 @@ impl Context {
     pub fn builder() -> ContextBuilder {
         ContextBuilder::default()
     }
-    pub fn build_for_sk(cu_limit: u64) -> self {
+    pub fn new_sk_context(cu_limit: u64) -> Self {
         ContextBuilder::default().build_for_sk(cu_limit)
     }
     /// Gets the string interner.
@@ -872,7 +872,7 @@ impl ContextBuilder {
                 trace: false,
                 stack_size_limit: 1024,
                 cu_cost: 0,
-                cu_limit: cu_limit, // only diff at sk boa
+                cu_limit: Some(cu_limit), // only diff at sk boa
             },
             #[cfg(feature = "intl")]
             icu: self.icu.unwrap_or_else(|| {
