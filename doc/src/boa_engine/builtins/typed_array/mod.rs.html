@@ -6930,22 +6930,22 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">str</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">TypedArrayKind::Int8</span> =&gt; <span class="string">&quot;Int8Array&quot;</span>,
-            <span class="ident">TypedArrayKind::Uint8</span> =&gt; <span class="string">&quot;Uint8Array&quot;</span>,
-            <span class="ident">TypedArrayKind::Uint8Clamped</span> =&gt; <span class="string">&quot;Uint8ClampedArray&quot;</span>,
-            <span class="ident">TypedArrayKind::Int16</span> =&gt; <span class="string">&quot;Int16Array&quot;</span>,
-            <span class="ident">TypedArrayKind::Uint16</span> =&gt; <span class="string">&quot;Uint16Array&quot;</span>,
-            <span class="ident">TypedArrayKind::Int32</span> =&gt; <span class="string">&quot;Int32Array&quot;</span>,
-            <span class="ident">TypedArrayKind::Uint32</span> =&gt; <span class="string">&quot;Uint32Array&quot;</span>,
-            <span class="ident">TypedArrayKind::BigInt64</span> =&gt; <span class="string">&quot;BigInt64Array&quot;</span>,
-            <span class="ident">TypedArrayKind::BigUint64</span> =&gt; <span class="string">&quot;BigUint64Array&quot;</span>,
-            <span class="ident">TypedArrayKind::Float32</span> =&gt; <span class="string">&quot;Float32Array&quot;</span>,
-            <span class="ident">TypedArrayKind::Float64</span> =&gt; <span class="string">&quot;Float64Array&quot;</span>,
+            <span class="ident"><span class="self">Self</span>::Int8</span> =&gt; <span class="string">&quot;Int8Array&quot;</span>,
+            <span class="ident"><span class="self">Self</span>::Uint8</span> =&gt; <span class="string">&quot;Uint8Array&quot;</span>,
+            <span class="ident"><span class="self">Self</span>::Uint8Clamped</span> =&gt; <span class="string">&quot;Uint8ClampedArray&quot;</span>,
+            <span class="ident"><span class="self">Self</span>::Int16</span> =&gt; <span class="string">&quot;Int16Array&quot;</span>,
+            <span class="ident"><span class="self">Self</span>::Uint16</span> =&gt; <span class="string">&quot;Uint16Array&quot;</span>,
+            <span class="ident"><span class="self">Self</span>::Int32</span> =&gt; <span class="string">&quot;Int32Array&quot;</span>,
+            <span class="ident"><span class="self">Self</span>::Uint32</span> =&gt; <span class="string">&quot;Uint32Array&quot;</span>,
+            <span class="ident"><span class="self">Self</span>::BigInt64</span> =&gt; <span class="string">&quot;BigInt64Array&quot;</span>,
+            <span class="ident"><span class="self">Self</span>::BigUint64</span> =&gt; <span class="string">&quot;BigUint64Array&quot;</span>,
+            <span class="ident"><span class="self">Self</span>::Float32</span> =&gt; <span class="string">&quot;Float32Array&quot;</span>,
+            <span class="ident"><span class="self">Self</span>::Float64</span> =&gt; <span class="string">&quot;Float64Array&quot;</span>,
         }
     }
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">is_big_int_element_type</span>(<span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="macro">matches!</span>(<span class="self">self</span>, <span class="ident">TypedArrayKind::BigUint64</span> <span class="op">|</span> <span class="ident">TypedArrayKind::BigInt64</span>)
+        <span class="macro">matches!</span>(<span class="self">self</span>, <span class="ident"><span class="self">Self</span>::BigUint64</span> <span class="op">|</span> <span class="ident"><span class="self">Self</span>::BigInt64</span>)
     }
 }
 

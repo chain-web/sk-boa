@@ -1078,6 +1078,16 @@
 <span id="1071">1071</span>
 <span id="1072">1072</span>
 <span id="1073">1073</span>
+<span id="1074">1074</span>
+<span id="1075">1075</span>
+<span id="1076">1076</span>
+<span id="1077">1077</span>
+<span id="1078">1078</span>
+<span id="1079">1079</span>
+<span id="1080">1080</span>
+<span id="1081">1081</span>
+<span id="1082">1082</span>
+<span id="1083">1083</span>
 </pre><pre class="rust"><code><span class="doccomment">//! This module implements the JavaScript Value.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Javascript values, utility methods and conversion between Javascript values and Rust values.</span>
@@ -1228,7 +1238,7 @@
         <span class="self">self</span>.<span class="ident">as_object</span>().<span class="ident">filter</span>(<span class="op">|</span><span class="ident">obj</span><span class="op">|</span> <span class="ident">obj</span>.<span class="ident">is_callable</span>())
     }
 
-    <span class="doccomment">/// Returns true if the value is a constructor object</span>
+    <span class="doccomment">/// Returns true if the value is a constructor object.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_constructor</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
         <span class="macro">matches!</span>(<span class="self">self</span>, <span class="ident"><span class="self">Self</span>::Object</span>(<span class="ident">obj</span>) <span class="kw">if</span> <span class="ident">obj</span>.<span class="ident">is_constructor</span>())
@@ -1237,6 +1247,17 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_constructor</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">JsObject</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_object</span>().<span class="ident">filter</span>(<span class="op">|</span><span class="ident">obj</span><span class="op">|</span> <span class="ident">obj</span>.<span class="ident">is_constructor</span>())
+    }
+
+    <span class="doccomment">/// Returns true if the value is a promise object.</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_promise</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
+        <span class="macro">matches!</span>(<span class="self">self</span>, <span class="ident"><span class="self">Self</span>::Object</span>(<span class="ident">obj</span>) <span class="kw">if</span> <span class="ident">obj</span>.<span class="ident">is_promise</span>())
+    }
+
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_promise</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">JsObject</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">as_object</span>().<span class="ident">filter</span>(<span class="op">|</span><span class="ident">obj</span><span class="op">|</span> <span class="ident">obj</span>.<span class="ident">is_promise</span>())
     }
 
     <span class="doccomment">/// Returns true if the value is a symbol.</span>
@@ -1358,7 +1379,6 @@
     <span class="doccomment">/// [spec]: https://tc39.es/ecma262/#sec-toboolean</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_boolean</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident"><span class="self">Self</span>::Undefined</span> <span class="op">|</span> <span class="ident"><span class="self">Self</span>::Null</span> =&gt; <span class="bool-val">false</span>,
             <span class="ident"><span class="self">Self</span>::Symbol</span>(<span class="kw">_</span>) <span class="op">|</span> <span class="ident"><span class="self">Self</span>::Object</span>(<span class="kw">_</span>) =&gt; <span class="bool-val">true</span>,
             <span class="ident"><span class="self">Self</span>::String</span>(<span class="kw-2">ref</span> <span class="ident">s</span>) <span class="kw">if</span> <span class="op">!</span><span class="ident">s</span>.<span class="ident">is_empty</span>() =&gt; <span class="bool-val">true</span>,
             <span class="ident"><span class="self">Self</span>::Rational</span>(<span class="ident">n</span>) <span class="kw">if</span> <span class="ident">n</span> <span class="op">!</span><span class="op">=</span> <span class="number">0.0</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">n</span>.<span class="ident">is_nan</span>() =&gt; <span class="bool-val">true</span>,
@@ -1467,9 +1487,9 @@
     <span class="doccomment">/// [spec]: https://tc39.es/ecma262/#sec-tobigint</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_bigint</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">context</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Context</span>) -&gt; <span class="ident">JsResult</span><span class="op">&lt;</span><span class="ident">JsBigInt</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">JsValue::Null</span> =&gt; <span class="ident">context</span>.<span class="ident">throw_type_error</span>(<span class="string">&quot;cannot convert null to a BigInt&quot;</span>),
-            <span class="ident">JsValue::Undefined</span> =&gt; <span class="ident">context</span>.<span class="ident">throw_type_error</span>(<span class="string">&quot;cannot convert undefined to a BigInt&quot;</span>),
-            <span class="ident">JsValue::String</span>(<span class="kw-2">ref</span> <span class="ident">string</span>) =&gt; {
+            <span class="ident"><span class="self">Self</span>::Null</span> =&gt; <span class="ident">context</span>.<span class="ident">throw_type_error</span>(<span class="string">&quot;cannot convert null to a BigInt&quot;</span>),
+            <span class="ident"><span class="self">Self</span>::Undefined</span> =&gt; <span class="ident">context</span>.<span class="ident">throw_type_error</span>(<span class="string">&quot;cannot convert undefined to a BigInt&quot;</span>),
+            <span class="ident"><span class="self">Self</span>::String</span>(<span class="kw-2">ref</span> <span class="ident">string</span>) =&gt; {
                 <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span> <span class="ident">JsBigInt::from_string</span>(<span class="ident">string</span>) {
                     <span class="prelude-val">Ok</span>(<span class="ident">value</span>)
                 } <span class="kw">else</span> {
@@ -1478,17 +1498,17 @@
                     ))
                 }
             }
-            <span class="ident">JsValue::Boolean</span>(<span class="bool-val">true</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">JsBigInt::one</span>()),
-            <span class="ident">JsValue::Boolean</span>(<span class="bool-val">false</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">JsBigInt::zero</span>()),
-            <span class="ident">JsValue::Integer</span>(<span class="kw">_</span>) <span class="op">|</span> <span class="ident">JsValue::Rational</span>(<span class="kw">_</span>) =&gt; {
+            <span class="ident"><span class="self">Self</span>::Boolean</span>(<span class="bool-val">true</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">JsBigInt::one</span>()),
+            <span class="ident"><span class="self">Self</span>::Boolean</span>(<span class="bool-val">false</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">JsBigInt::zero</span>()),
+            <span class="ident"><span class="self">Self</span>::Integer</span>(<span class="kw">_</span>) <span class="op">|</span> <span class="ident"><span class="self">Self</span>::Rational</span>(<span class="kw">_</span>) =&gt; {
                 <span class="ident">context</span>.<span class="ident">throw_type_error</span>(<span class="string">&quot;cannot convert Number to a BigInt&quot;</span>)
             }
-            <span class="ident">JsValue::BigInt</span>(<span class="ident">b</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">b</span>.<span class="ident">clone</span>()),
-            <span class="ident">JsValue::Object</span>(<span class="kw">_</span>) =&gt; {
+            <span class="ident"><span class="self">Self</span>::BigInt</span>(<span class="ident">b</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">b</span>.<span class="ident">clone</span>()),
+            <span class="ident"><span class="self">Self</span>::Object</span>(<span class="kw">_</span>) =&gt; {
                 <span class="kw">let</span> <span class="ident">primitive</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">to_primitive</span>(<span class="ident">context</span>, <span class="ident">PreferredType::Number</span>)<span class="question-mark">?</span>;
                 <span class="ident">primitive</span>.<span class="ident">to_bigint</span>(<span class="ident">context</span>)
             }
-            <span class="ident">JsValue::Symbol</span>(<span class="kw">_</span>) =&gt; <span class="ident">context</span>.<span class="ident">throw_type_error</span>(<span class="string">&quot;cannot convert Symbol to a BigInt&quot;</span>),
+            <span class="ident"><span class="self">Self</span>::Symbol</span>(<span class="kw">_</span>) =&gt; <span class="ident">context</span>.<span class="ident">throw_type_error</span>(<span class="string">&quot;cannot convert Symbol to a BigInt&quot;</span>),
         }
     }
 
@@ -1519,15 +1539,15 @@
     <span class="doccomment">/// This function is equivalent to `String(value)` in JavaScript.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">context</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Context</span>) -&gt; <span class="ident">JsResult</span><span class="op">&lt;</span><span class="ident">JsString</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">JsValue::Null</span> =&gt; <span class="prelude-val">Ok</span>(<span class="string">&quot;null&quot;</span>.<span class="ident">into</span>()),
-            <span class="ident">JsValue::Undefined</span> =&gt; <span class="prelude-val">Ok</span>(<span class="string">&quot;undefined&quot;</span>.<span class="ident">into</span>()),
-            <span class="ident">JsValue::Boolean</span>(<span class="ident">boolean</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">boolean</span>.<span class="ident">to_string</span>().<span class="ident">into</span>()),
-            <span class="ident">JsValue::Rational</span>(<span class="ident">rational</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Number::to_native_string</span>(<span class="kw-2">*</span><span class="ident">rational</span>).<span class="ident">into</span>()),
-            <span class="ident">JsValue::Integer</span>(<span class="ident">integer</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">integer</span>.<span class="ident">to_string</span>().<span class="ident">into</span>()),
-            <span class="ident">JsValue::String</span>(<span class="ident">string</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">string</span>.<span class="ident">clone</span>()),
-            <span class="ident">JsValue::Symbol</span>(<span class="kw">_</span>) =&gt; <span class="ident">context</span>.<span class="ident">throw_type_error</span>(<span class="string">&quot;can&#39;t convert symbol to string&quot;</span>),
-            <span class="ident">JsValue::BigInt</span>(<span class="kw-2">ref</span> <span class="ident">bigint</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">bigint</span>.<span class="ident">to_string</span>().<span class="ident">into</span>()),
-            <span class="ident">JsValue::Object</span>(<span class="kw">_</span>) =&gt; {
+            <span class="ident"><span class="self">Self</span>::Null</span> =&gt; <span class="prelude-val">Ok</span>(<span class="string">&quot;null&quot;</span>.<span class="ident">into</span>()),
+            <span class="ident"><span class="self">Self</span>::Undefined</span> =&gt; <span class="prelude-val">Ok</span>(<span class="string">&quot;undefined&quot;</span>.<span class="ident">into</span>()),
+            <span class="ident"><span class="self">Self</span>::Boolean</span>(<span class="ident">boolean</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">boolean</span>.<span class="ident">to_string</span>().<span class="ident">into</span>()),
+            <span class="ident"><span class="self">Self</span>::Rational</span>(<span class="ident">rational</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Number::to_native_string</span>(<span class="kw-2">*</span><span class="ident">rational</span>).<span class="ident">into</span>()),
+            <span class="ident"><span class="self">Self</span>::Integer</span>(<span class="ident">integer</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">integer</span>.<span class="ident">to_string</span>().<span class="ident">into</span>()),
+            <span class="ident"><span class="self">Self</span>::String</span>(<span class="ident">string</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">string</span>.<span class="ident">clone</span>()),
+            <span class="ident"><span class="self">Self</span>::Symbol</span>(<span class="kw">_</span>) =&gt; <span class="ident">context</span>.<span class="ident">throw_type_error</span>(<span class="string">&quot;can&#39;t convert symbol to string&quot;</span>),
+            <span class="ident"><span class="self">Self</span>::BigInt</span>(<span class="kw-2">ref</span> <span class="ident">bigint</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">bigint</span>.<span class="ident">to_string</span>().<span class="ident">into</span>()),
+            <span class="ident"><span class="self">Self</span>::Object</span>(<span class="kw">_</span>) =&gt; {
                 <span class="kw">let</span> <span class="ident">primitive</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">to_primitive</span>(<span class="ident">context</span>, <span class="ident">PreferredType::String</span>)<span class="question-mark">?</span>;
                 <span class="ident">primitive</span>.<span class="ident">to_string</span>(<span class="ident">context</span>)
             }
@@ -1541,31 +1561,31 @@
     <span class="doccomment">/// See: &lt;https://tc39.es/ecma262/#sec-toobject&gt;</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_object</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">context</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Context</span>) -&gt; <span class="ident">JsResult</span><span class="op">&lt;</span><span class="ident">JsObject</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">JsValue::Undefined</span> <span class="op">|</span> <span class="ident">JsValue::Null</span> =&gt; {
+            <span class="ident"><span class="self">Self</span>::Undefined</span> <span class="op">|</span> <span class="ident"><span class="self">Self</span>::Null</span> =&gt; {
                 <span class="ident">context</span>.<span class="ident">throw_type_error</span>(<span class="string">&quot;cannot convert &#39;null&#39; or &#39;undefined&#39; to object&quot;</span>)
             }
-            <span class="ident">JsValue::Boolean</span>(<span class="ident">boolean</span>) =&gt; {
+            <span class="ident"><span class="self">Self</span>::Boolean</span>(<span class="ident">boolean</span>) =&gt; {
                 <span class="kw">let</span> <span class="ident">prototype</span> <span class="op">=</span> <span class="ident">context</span>.<span class="ident">intrinsics</span>().<span class="ident">constructors</span>().<span class="ident">boolean</span>().<span class="ident">prototype</span>();
                 <span class="prelude-val">Ok</span>(<span class="ident">JsObject::from_proto_and_data</span>(
                     <span class="ident">prototype</span>,
                     <span class="ident">ObjectData::boolean</span>(<span class="kw-2">*</span><span class="ident">boolean</span>),
                 ))
             }
-            <span class="ident">JsValue::Integer</span>(<span class="ident">integer</span>) =&gt; {
+            <span class="ident"><span class="self">Self</span>::Integer</span>(<span class="ident">integer</span>) =&gt; {
                 <span class="kw">let</span> <span class="ident">prototype</span> <span class="op">=</span> <span class="ident">context</span>.<span class="ident">intrinsics</span>().<span class="ident">constructors</span>().<span class="ident">number</span>().<span class="ident">prototype</span>();
                 <span class="prelude-val">Ok</span>(<span class="ident">JsObject::from_proto_and_data</span>(
                     <span class="ident">prototype</span>,
                     <span class="ident">ObjectData::number</span>(<span class="ident">f64::from</span>(<span class="kw-2">*</span><span class="ident">integer</span>)),
                 ))
             }
-            <span class="ident">JsValue::Rational</span>(<span class="ident">rational</span>) =&gt; {
+            <span class="ident"><span class="self">Self</span>::Rational</span>(<span class="ident">rational</span>) =&gt; {
                 <span class="kw">let</span> <span class="ident">prototype</span> <span class="op">=</span> <span class="ident">context</span>.<span class="ident">intrinsics</span>().<span class="ident">constructors</span>().<span class="ident">number</span>().<span class="ident">prototype</span>();
                 <span class="prelude-val">Ok</span>(<span class="ident">JsObject::from_proto_and_data</span>(
                     <span class="ident">prototype</span>,
                     <span class="ident">ObjectData::number</span>(<span class="kw-2">*</span><span class="ident">rational</span>),
                 ))
             }
-            <span class="ident">JsValue::String</span>(<span class="kw-2">ref</span> <span class="ident">string</span>) =&gt; {
+            <span class="ident"><span class="self">Self</span>::String</span>(<span class="kw-2">ref</span> <span class="ident">string</span>) =&gt; {
                 <span class="kw">let</span> <span class="ident">prototype</span> <span class="op">=</span> <span class="ident">context</span>.<span class="ident">intrinsics</span>().<span class="ident">constructors</span>().<span class="ident">string</span>().<span class="ident">prototype</span>();
 
                 <span class="kw">let</span> <span class="ident">object</span> <span class="op">=</span>
@@ -1581,14 +1601,14 @@
                 );
                 <span class="prelude-val">Ok</span>(<span class="ident">object</span>)
             }
-            <span class="ident">JsValue::Symbol</span>(<span class="kw-2">ref</span> <span class="ident">symbol</span>) =&gt; {
+            <span class="ident"><span class="self">Self</span>::Symbol</span>(<span class="kw-2">ref</span> <span class="ident">symbol</span>) =&gt; {
                 <span class="kw">let</span> <span class="ident">prototype</span> <span class="op">=</span> <span class="ident">context</span>.<span class="ident">intrinsics</span>().<span class="ident">constructors</span>().<span class="ident">symbol</span>().<span class="ident">prototype</span>();
                 <span class="prelude-val">Ok</span>(<span class="ident">JsObject::from_proto_and_data</span>(
                     <span class="ident">prototype</span>,
                     <span class="ident">ObjectData::symbol</span>(<span class="ident">symbol</span>.<span class="ident">clone</span>()),
                 ))
             }
-            <span class="ident">JsValue::BigInt</span>(<span class="kw-2">ref</span> <span class="ident">bigint</span>) =&gt; {
+            <span class="ident"><span class="self">Self</span>::BigInt</span>(<span class="kw-2">ref</span> <span class="ident">bigint</span>) =&gt; {
                 <span class="kw">let</span> <span class="ident">prototype</span> <span class="op">=</span> <span class="ident">context</span>
                     .<span class="ident">intrinsics</span>()
                     .<span class="ident">constructors</span>()
@@ -1599,7 +1619,7 @@
                     <span class="ident">ObjectData::big_int</span>(<span class="ident">bigint</span>.<span class="ident">clone</span>()),
                 ))
             }
-            <span class="ident">JsValue::Object</span>(<span class="ident">jsobject</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">jsobject</span>.<span class="ident">clone</span>()),
+            <span class="ident"><span class="self">Self</span>::Object</span>(<span class="ident">jsobject</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">jsobject</span>.<span class="ident">clone</span>()),
         }
     }
 
@@ -1609,12 +1629,12 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_property_key</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">context</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Context</span>) -&gt; <span class="ident">JsResult</span><span class="op">&lt;</span><span class="ident">PropertyKey</span><span class="op">&gt;</span> {
         <span class="prelude-val">Ok</span>(<span class="kw">match</span> <span class="self">self</span> {
             <span class="comment">// Fast path:</span>
-            <span class="ident">JsValue::String</span>(<span class="ident">string</span>) =&gt; <span class="ident">string</span>.<span class="ident">clone</span>().<span class="ident">into</span>(),
-            <span class="ident">JsValue::Symbol</span>(<span class="ident">symbol</span>) =&gt; <span class="ident">symbol</span>.<span class="ident">clone</span>().<span class="ident">into</span>(),
+            <span class="ident"><span class="self">Self</span>::String</span>(<span class="ident">string</span>) =&gt; <span class="ident">string</span>.<span class="ident">clone</span>().<span class="ident">into</span>(),
+            <span class="ident"><span class="self">Self</span>::Symbol</span>(<span class="ident">symbol</span>) =&gt; <span class="ident">symbol</span>.<span class="ident">clone</span>().<span class="ident">into</span>(),
             <span class="comment">// Slow path:</span>
             <span class="kw">_</span> =&gt; <span class="kw">match</span> <span class="self">self</span>.<span class="ident">to_primitive</span>(<span class="ident">context</span>, <span class="ident">PreferredType::String</span>)<span class="question-mark">?</span> {
-                <span class="ident">JsValue::String</span>(<span class="kw-2">ref</span> <span class="ident">string</span>) =&gt; <span class="ident">string</span>.<span class="ident">clone</span>().<span class="ident">into</span>(),
-                <span class="ident">JsValue::Symbol</span>(<span class="kw-2">ref</span> <span class="ident">symbol</span>) =&gt; <span class="ident">symbol</span>.<span class="ident">clone</span>().<span class="ident">into</span>(),
+                <span class="ident"><span class="self">Self</span>::String</span>(<span class="kw-2">ref</span> <span class="ident">string</span>) =&gt; <span class="ident">string</span>.<span class="ident">clone</span>().<span class="ident">into</span>(),
+                <span class="ident"><span class="self">Self</span>::Symbol</span>(<span class="kw-2">ref</span> <span class="ident">symbol</span>) =&gt; <span class="ident">symbol</span>.<span class="ident">clone</span>().<span class="ident">into</span>(),
                 <span class="ident">primitive</span> =&gt; <span class="ident">primitive</span>.<span class="ident">to_string</span>(<span class="ident">context</span>)<span class="question-mark">?</span>.<span class="ident">into</span>(),
             },
         })
@@ -1933,15 +1953,15 @@
     <span class="doccomment">/// See: &lt;https://tc39.es/ecma262/#sec-tonumber&gt;</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_number</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">context</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Context</span>) -&gt; <span class="ident">JsResult</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">JsValue::Null</span> =&gt; <span class="prelude-val">Ok</span>(<span class="number">0.0</span>),
-            <span class="ident">JsValue::Undefined</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">f64::NAN</span>),
-            <span class="ident">JsValue::Boolean</span>(<span class="ident">b</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="kw">if</span> <span class="ident">b</span> { <span class="number">1.0</span> } <span class="kw">else</span> { <span class="number">0.0</span> }),
-            <span class="ident">JsValue::String</span>(<span class="kw-2">ref</span> <span class="ident">string</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">string</span>.<span class="ident">string_to_number</span>()),
-            <span class="ident">JsValue::Rational</span>(<span class="ident">number</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">number</span>),
-            <span class="ident">JsValue::Integer</span>(<span class="ident">integer</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">f64::from</span>(<span class="ident">integer</span>)),
-            <span class="ident">JsValue::Symbol</span>(<span class="kw">_</span>) =&gt; <span class="ident">context</span>.<span class="ident">throw_type_error</span>(<span class="string">&quot;argument must not be a symbol&quot;</span>),
-            <span class="ident">JsValue::BigInt</span>(<span class="kw">_</span>) =&gt; <span class="ident">context</span>.<span class="ident">throw_type_error</span>(<span class="string">&quot;argument must not be a bigint&quot;</span>),
-            <span class="ident">JsValue::Object</span>(<span class="kw">_</span>) =&gt; {
+            <span class="ident"><span class="self">Self</span>::Null</span> =&gt; <span class="prelude-val">Ok</span>(<span class="number">0.0</span>),
+            <span class="ident"><span class="self">Self</span>::Undefined</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">f64::NAN</span>),
+            <span class="ident"><span class="self">Self</span>::Boolean</span>(<span class="ident">b</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="kw">if</span> <span class="ident">b</span> { <span class="number">1.0</span> } <span class="kw">else</span> { <span class="number">0.0</span> }),
+            <span class="ident"><span class="self">Self</span>::String</span>(<span class="kw-2">ref</span> <span class="ident">string</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">string</span>.<span class="ident">string_to_number</span>()),
+            <span class="ident"><span class="self">Self</span>::Rational</span>(<span class="ident">number</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">number</span>),
+            <span class="ident"><span class="self">Self</span>::Integer</span>(<span class="ident">integer</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">f64::from</span>(<span class="ident">integer</span>)),
+            <span class="ident"><span class="self">Self</span>::Symbol</span>(<span class="kw">_</span>) =&gt; <span class="ident">context</span>.<span class="ident">throw_type_error</span>(<span class="string">&quot;argument must not be a symbol&quot;</span>),
+            <span class="ident"><span class="self">Self</span>::BigInt</span>(<span class="kw">_</span>) =&gt; <span class="ident">context</span>.<span class="ident">throw_type_error</span>(<span class="string">&quot;argument must not be a bigint&quot;</span>),
+            <span class="ident"><span class="self">Self</span>::Object</span>(<span class="kw">_</span>) =&gt; {
                 <span class="kw">let</span> <span class="ident">primitive</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">to_primitive</span>(<span class="ident">context</span>, <span class="ident">PreferredType::Number</span>)<span class="question-mark">?</span>;
                 <span class="ident">primitive</span>.<span class="ident">to_number</span>(<span class="ident">context</span>)
             }

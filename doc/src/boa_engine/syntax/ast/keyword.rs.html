@@ -639,7 +639,7 @@
 <span class="doccomment">//!  - [ECMAScript reference][spec]</span>
 <span class="doccomment">//!  - [MDN documentation][mdn]</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! [spec]: https://www.ecma-international.org/ecma-262/#sec-keywords</span>
+<span class="doccomment">//! [spec]: https://tc39.es/ecma262/#sec-keywords-and-reserved-words</span>
 <span class="doccomment">//! [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#Keywords</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::syntax::ast::op</span>::{<span class="ident">BinOp</span>, <span class="ident">CompOp</span>};
@@ -657,7 +657,7 @@
 <span class="doccomment">///  - [ECMAScript reference][spec]</span>
 <span class="doccomment">///  - [MDN documentation][mdn]</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// [spec]: https://www.ecma-international.org/ecma-262/#sec-keywords</span>
+<span class="doccomment">/// [spec]: https://tc39.es/ecma262/#sec-keywords-and-reserved-words</span>
 <span class="doccomment">/// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#Keywords</span>
 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;deser&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
@@ -1120,8 +1120,8 @@
     <span class="doccomment">/// Gets the keyword as a binary operation, if this keyword is the `in` keyword.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_binop</span>(<span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BinOp</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Keyword::In</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">BinOp::Comp</span>(<span class="ident">CompOp::In</span>)),
-            <span class="ident">Keyword::InstanceOf</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">BinOp::Comp</span>(<span class="ident">CompOp::InstanceOf</span>)),
+            <span class="ident"><span class="self">Self</span>::In</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">BinOp::Comp</span>(<span class="ident">CompOp::In</span>)),
+            <span class="ident"><span class="self">Self</span>::InstanceOf</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">BinOp::Comp</span>(<span class="ident">CompOp::InstanceOf</span>)),
             <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
         }
     }

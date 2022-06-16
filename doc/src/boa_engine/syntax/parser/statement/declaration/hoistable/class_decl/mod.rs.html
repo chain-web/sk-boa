@@ -1253,6 +1253,52 @@
 <span id="1246">1246</span>
 <span id="1247">1247</span>
 <span id="1248">1248</span>
+<span id="1249">1249</span>
+<span id="1250">1250</span>
+<span id="1251">1251</span>
+<span id="1252">1252</span>
+<span id="1253">1253</span>
+<span id="1254">1254</span>
+<span id="1255">1255</span>
+<span id="1256">1256</span>
+<span id="1257">1257</span>
+<span id="1258">1258</span>
+<span id="1259">1259</span>
+<span id="1260">1260</span>
+<span id="1261">1261</span>
+<span id="1262">1262</span>
+<span id="1263">1263</span>
+<span id="1264">1264</span>
+<span id="1265">1265</span>
+<span id="1266">1266</span>
+<span id="1267">1267</span>
+<span id="1268">1268</span>
+<span id="1269">1269</span>
+<span id="1270">1270</span>
+<span id="1271">1271</span>
+<span id="1272">1272</span>
+<span id="1273">1273</span>
+<span id="1274">1274</span>
+<span id="1275">1275</span>
+<span id="1276">1276</span>
+<span id="1277">1277</span>
+<span id="1278">1278</span>
+<span id="1279">1279</span>
+<span id="1280">1280</span>
+<span id="1281">1281</span>
+<span id="1282">1282</span>
+<span id="1283">1283</span>
+<span id="1284">1284</span>
+<span id="1285">1285</span>
+<span id="1286">1286</span>
+<span id="1287">1287</span>
+<span id="1288">1288</span>
+<span id="1289">1289</span>
+<span id="1290">1290</span>
+<span id="1291">1291</span>
+<span id="1292">1292</span>
+<span id="1293">1293</span>
+<span id="1294">1294</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::syntax</span>::{
     <span class="ident">ast</span>::{
         <span class="ident">node</span>::{
@@ -1266,14 +1312,14 @@
     <span class="ident">lexer</span>::{<span class="ident">Error</span> <span class="kw">as</span> <span class="ident">LexError</span>, <span class="ident">TokenKind</span>},
     <span class="ident">parser</span>::{
         <span class="ident">expression</span>::{
-            <span class="ident">AssignmentExpression</span>, <span class="ident">AsyncGeneratorMethod</span>, <span class="ident">AsyncMethod</span>, <span class="ident">GeneratorMethod</span>,
-            <span class="ident">LeftHandSideExpression</span>, <span class="ident">PropertyName</span>,
+            <span class="ident">AssignmentExpression</span>, <span class="ident">AsyncGeneratorMethod</span>, <span class="ident">AsyncMethod</span>, <span class="ident">BindingIdentifier</span>,
+            <span class="ident">GeneratorMethod</span>, <span class="ident">LeftHandSideExpression</span>, <span class="ident">PropertyName</span>,
         },
         <span class="ident">function</span>::{
             <span class="ident">FormalParameter</span>, <span class="ident">FormalParameters</span>, <span class="ident">FunctionBody</span>, <span class="ident">UniqueFormalParameters</span>,
             <span class="ident">FUNCTION_BREAK_TOKENS</span>,
         },
-        <span class="ident">statement</span>::{<span class="ident">BindingIdentifier</span>, <span class="ident">StatementList</span>},
+        <span class="ident">statement::StatementList</span>,
         <span class="ident">AllowAwait</span>, <span class="ident">AllowDefault</span>, <span class="ident">AllowYield</span>, <span class="ident">Cursor</span>, <span class="ident">ParseError</span>, <span class="ident">TokenParser</span>,
     },
 };
@@ -1770,6 +1816,7 @@
         };
 
         <span class="kw">let</span> <span class="ident">token</span> <span class="op">=</span> <span class="ident">cursor</span>.<span class="ident">peek</span>(<span class="number">0</span>, <span class="ident">interner</span>)<span class="question-mark">?</span>.<span class="ident">ok_or</span>(<span class="ident">ParseError::AbruptEnd</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">position</span> <span class="op">=</span> <span class="ident">token</span>.<span class="ident">span</span>().<span class="ident">start</span>();
         <span class="kw">let</span> <span class="ident">element</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">token</span>.<span class="ident">kind</span>() {
             <span class="ident">TokenKind::Identifier</span>(<span class="ident">Sym::CONSTRUCTOR</span>) <span class="kw">if</span> <span class="op">!</span><span class="ident">r#static</span> =&gt; {
                 <span class="ident">cursor</span>.<span class="ident">next</span>(<span class="ident">interner</span>).<span class="ident">expect</span>(<span class="string">&quot;token disappeared&quot;</span>);
@@ -1816,7 +1863,7 @@
                         .<span class="ident">span</span>()
                         .<span class="ident">start</span>();
                     <span class="kw">let</span> <span class="ident">statement_list</span> <span class="op">=</span>
-                        <span class="ident">StatementList::new</span>(<span class="bool-val">false</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">true</span>, <span class="kw-2">&amp;</span><span class="ident">FUNCTION_BREAK_TOKENS</span>)
+                        <span class="ident">StatementList::new</span>(<span class="bool-val">false</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="kw-2">&amp;</span><span class="ident">FUNCTION_BREAK_TOKENS</span>)
                             .<span class="ident">parse</span>(<span class="ident">cursor</span>, <span class="ident">interner</span>)<span class="question-mark">?</span>;
 
                     <span class="kw">let</span> <span class="ident">lexically_declared_names</span> <span class="op">=</span> <span class="ident">statement_list</span>.<span class="ident">lexically_declared_names</span>();
@@ -1871,22 +1918,38 @@
                 }
                 <span class="kw">let</span> <span class="ident">strict</span> <span class="op">=</span> <span class="ident">cursor</span>.<span class="ident">strict_mode</span>();
                 <span class="ident">cursor</span>.<span class="ident">set_strict_mode</span>(<span class="bool-val">true</span>);
-                <span class="kw">let</span> (<span class="ident">property_name</span>, <span class="ident">method</span>) <span class="op">=</span>
+                <span class="kw">let</span> (<span class="ident">class_element_name</span>, <span class="ident">method</span>) <span class="op">=</span>
                     <span class="ident">GeneratorMethod::new</span>(<span class="self">self</span>.<span class="ident">allow_yield</span>, <span class="self">self</span>.<span class="ident">allow_await</span>)
                         .<span class="ident">parse</span>(<span class="ident">cursor</span>, <span class="ident">interner</span>)<span class="question-mark">?</span>;
                 <span class="ident">cursor</span>.<span class="ident">set_strict_mode</span>(<span class="ident">strict</span>);
-                <span class="kw">if</span> <span class="ident">r#static</span> {
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>) <span class="op">=</span> <span class="ident">property_name</span>.<span class="ident">prop_name</span>() {
-                        <span class="kw">if</span> <span class="ident">name</span> <span class="op">==</span> <span class="ident">Sym::PROTOTYPE</span> {
+
+                <span class="kw">match</span> <span class="ident">class_element_name</span> {
+                    <span class="ident">node::object::ClassElementName::PropertyName</span>(<span class="ident">property_name</span>) <span class="kw">if</span> <span class="ident">r#static</span> =&gt; {
+                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">Sym::PROTOTYPE</span>) <span class="op">=</span> <span class="ident">property_name</span>.<span class="ident">prop_name</span>() {
                             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ParseError::general</span>(
                                 <span class="string">&quot;class may not have static method definitions named &#39;prototype&#39;&quot;</span>,
                                 <span class="ident">name_position</span>,
                             ));
                         }
+                        <span class="ident">ClassElementNode::StaticMethodDefinition</span>(<span class="ident">property_name</span>, <span class="ident">method</span>)
                     }
-                    <span class="ident">ClassElementNode::StaticMethodDefinition</span>(<span class="ident">property_name</span>, <span class="ident">method</span>)
-                } <span class="kw">else</span> {
-                    <span class="ident">ClassElementNode::MethodDefinition</span>(<span class="ident">property_name</span>, <span class="ident">method</span>)
+                    <span class="ident">node::object::ClassElementName::PropertyName</span>(<span class="ident">property_name</span>) =&gt; {
+                        <span class="ident">ClassElementNode::MethodDefinition</span>(<span class="ident">property_name</span>, <span class="ident">method</span>)
+                    }
+                    <span class="ident">node::object::ClassElementName::PrivateIdentifier</span>(<span class="ident">Sym::CONSTRUCTOR</span>) =&gt; {
+                        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ParseError::general</span>(
+                            <span class="string">&quot;class constructor may not be a private method&quot;</span>,
+                            <span class="ident">name_position</span>,
+                        ))
+                    }
+                    <span class="ident">node::object::ClassElementName::PrivateIdentifier</span>(<span class="ident">private_ident</span>)
+                        <span class="kw">if</span> <span class="ident">r#static</span> =&gt;
+                    {
+                        <span class="ident">ClassElementNode::PrivateStaticMethodDefinition</span>(<span class="ident">private_ident</span>, <span class="ident">method</span>)
+                    }
+                    <span class="ident">node::object::ClassElementName::PrivateIdentifier</span>(<span class="ident">private_ident</span>) =&gt; {
+                        <span class="ident">ClassElementNode::PrivateMethodDefinition</span>(<span class="ident">private_ident</span>, <span class="ident">method</span>)
+                    }
                 }
             }
             <span class="ident">TokenKind::Keyword</span>((<span class="ident">Keyword::Async</span>, <span class="bool-val">true</span>)) =&gt; {
@@ -2497,6 +2560,35 @@
                 ))
             }
         };
+
+        <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">element</span> {
+            <span class="comment">// FieldDefinition : ClassElementName Initializer [opt]</span>
+            <span class="comment">// It is a Syntax Error if Initializer is present and ContainsArguments of Initializer is true.</span>
+            <span class="ident">ClassElementNode::FieldDefinition</span>(<span class="kw">_</span>, <span class="prelude-val">Some</span>(<span class="ident">node</span>))
+            <span class="op">|</span> <span class="ident">ClassElementNode::StaticFieldDefinition</span>(<span class="kw">_</span>, <span class="prelude-val">Some</span>(<span class="ident">node</span>))
+            <span class="op">|</span> <span class="ident">ClassElementNode::PrivateFieldDefinition</span>(<span class="kw">_</span>, <span class="prelude-val">Some</span>(<span class="ident">node</span>))
+            <span class="op">|</span> <span class="ident">ClassElementNode::PrivateStaticFieldDefinition</span>(<span class="kw">_</span>, <span class="prelude-val">Some</span>(<span class="ident">node</span>)) =&gt; {
+                <span class="kw">if</span> <span class="ident">node</span>.<span class="ident">contains_arguments</span>() {
+                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ParseError::general</span>(
+                        <span class="string">&quot;&#39;arguments&#39; not allowed in class field definition&quot;</span>,
+                        <span class="ident">position</span>,
+                    ));
+                }
+            }
+            <span class="comment">// ClassStaticBlockBody : ClassStaticBlockStatementList</span>
+            <span class="comment">// It is a Syntax Error if ContainsArguments of ClassStaticBlockStatementList is true.</span>
+            <span class="ident">ClassElementNode::StaticBlock</span>(<span class="ident">block</span>) =&gt; {
+                <span class="kw">for</span> <span class="ident">node</span> <span class="kw">in</span> <span class="ident">block</span>.<span class="ident">items</span>() {
+                    <span class="kw">if</span> <span class="ident">node</span>.<span class="ident">contains_arguments</span>() {
+                        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ParseError::general</span>(
+                            <span class="string">&quot;&#39;arguments&#39; not allowed in class static block&quot;</span>,
+                            <span class="ident">position</span>,
+                        ));
+                    }
+                }
+            }
+            <span class="kw">_</span> =&gt; {}
+        }
 
         <span class="prelude-val">Ok</span>((<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="ident">element</span>)))
     }
