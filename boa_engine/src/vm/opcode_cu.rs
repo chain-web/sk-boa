@@ -89,11 +89,9 @@ pub(crate) fn as_cost(opcode: Opcode) -> u64 {
         Opcode::DefineClassSetterByName => 3,
         Opcode::SetPropertySetterByValue => 3,
         Opcode::DefineClassSetterByValue => 3,
-        Opcode::SetPrivateValue => 3,
         Opcode::SetPrivateSetter => 3,
         Opcode::SetPrivateGetter => 3,
         Opcode::GetPrivateField => 3,
-        Opcode::PushClassComputedFieldName => 3,
         Opcode::DeletePropertyByName => 3,
         Opcode::DeletePropertyByValue => 3,
         Opcode::CopyDataProperties => 3,
@@ -130,7 +128,6 @@ pub(crate) fn as_cost(opcode: Opcode) -> u64 {
         Opcode::ForInLoopInitIterator => 2,
         Opcode::InitIterator => 3,
         Opcode::IteratorNext => 3,
-        Opcode::IteratorNextFull => 3,
         Opcode::IteratorClose => 2,
         Opcode::IteratorToArray => 5,
         Opcode::ForInLoopNext => 3,
@@ -145,6 +142,9 @@ pub(crate) fn as_cost(opcode: Opcode) -> u64 {
         Opcode::GeneratorNext => 3,
         Opcode::GeneratorNextDelegate => 3,
         Opcode::Nop => 3,
+        Opcode::SetClassPrototype => 3,
+        Opcode::SetHomeObject => 3,
+        Opcode::PopIfThrown => 2,
         _ => {
             js_console_log(&format!("unknown opcode: {}", &opcode.as_str()));
             3
