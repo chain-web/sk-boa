@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["as_cost",""]]});
+window.SIDEBAR_ITEMS = {"fn":[["as_cost",""]]};

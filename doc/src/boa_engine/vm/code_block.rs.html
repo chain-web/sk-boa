@@ -1,11 +1,12 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `boa_engine/src/vm/code_block.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>code_block.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" href="https://raw.githubusercontent.com/boa-dev/boa/main/assets/logo.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../boa_engine/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/boa-dev/boa/main/assets/logo.svg" alt="logo"></div>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `boa_engine/src/vm/code_block.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>code_block.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" href="https://raw.githubusercontent.com/boa-dev/boa/main/assets/logo.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../boa_engine/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/boa-dev/boa/main/assets/logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../../boa_engine/index.html"><div class="logo-container">
                     <img src="https://raw.githubusercontent.com/boa-dev/boa/main/assets/logo.svg" alt="logo"></div>
         </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../boa_engine/index.html">
-                        <img src="https://raw.githubusercontent.com/boa-dev/boa/main/assets/logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+                        <img src="https://raw.githubusercontent.com/boa-dev/boa/main/assets/logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
+                                <a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div>
+                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -1050,6 +1051,290 @@
 <span id="1043">1043</span>
 <span id="1044">1044</span>
 <span id="1045">1045</span>
+<span id="1046">1046</span>
+<span id="1047">1047</span>
+<span id="1048">1048</span>
+<span id="1049">1049</span>
+<span id="1050">1050</span>
+<span id="1051">1051</span>
+<span id="1052">1052</span>
+<span id="1053">1053</span>
+<span id="1054">1054</span>
+<span id="1055">1055</span>
+<span id="1056">1056</span>
+<span id="1057">1057</span>
+<span id="1058">1058</span>
+<span id="1059">1059</span>
+<span id="1060">1060</span>
+<span id="1061">1061</span>
+<span id="1062">1062</span>
+<span id="1063">1063</span>
+<span id="1064">1064</span>
+<span id="1065">1065</span>
+<span id="1066">1066</span>
+<span id="1067">1067</span>
+<span id="1068">1068</span>
+<span id="1069">1069</span>
+<span id="1070">1070</span>
+<span id="1071">1071</span>
+<span id="1072">1072</span>
+<span id="1073">1073</span>
+<span id="1074">1074</span>
+<span id="1075">1075</span>
+<span id="1076">1076</span>
+<span id="1077">1077</span>
+<span id="1078">1078</span>
+<span id="1079">1079</span>
+<span id="1080">1080</span>
+<span id="1081">1081</span>
+<span id="1082">1082</span>
+<span id="1083">1083</span>
+<span id="1084">1084</span>
+<span id="1085">1085</span>
+<span id="1086">1086</span>
+<span id="1087">1087</span>
+<span id="1088">1088</span>
+<span id="1089">1089</span>
+<span id="1090">1090</span>
+<span id="1091">1091</span>
+<span id="1092">1092</span>
+<span id="1093">1093</span>
+<span id="1094">1094</span>
+<span id="1095">1095</span>
+<span id="1096">1096</span>
+<span id="1097">1097</span>
+<span id="1098">1098</span>
+<span id="1099">1099</span>
+<span id="1100">1100</span>
+<span id="1101">1101</span>
+<span id="1102">1102</span>
+<span id="1103">1103</span>
+<span id="1104">1104</span>
+<span id="1105">1105</span>
+<span id="1106">1106</span>
+<span id="1107">1107</span>
+<span id="1108">1108</span>
+<span id="1109">1109</span>
+<span id="1110">1110</span>
+<span id="1111">1111</span>
+<span id="1112">1112</span>
+<span id="1113">1113</span>
+<span id="1114">1114</span>
+<span id="1115">1115</span>
+<span id="1116">1116</span>
+<span id="1117">1117</span>
+<span id="1118">1118</span>
+<span id="1119">1119</span>
+<span id="1120">1120</span>
+<span id="1121">1121</span>
+<span id="1122">1122</span>
+<span id="1123">1123</span>
+<span id="1124">1124</span>
+<span id="1125">1125</span>
+<span id="1126">1126</span>
+<span id="1127">1127</span>
+<span id="1128">1128</span>
+<span id="1129">1129</span>
+<span id="1130">1130</span>
+<span id="1131">1131</span>
+<span id="1132">1132</span>
+<span id="1133">1133</span>
+<span id="1134">1134</span>
+<span id="1135">1135</span>
+<span id="1136">1136</span>
+<span id="1137">1137</span>
+<span id="1138">1138</span>
+<span id="1139">1139</span>
+<span id="1140">1140</span>
+<span id="1141">1141</span>
+<span id="1142">1142</span>
+<span id="1143">1143</span>
+<span id="1144">1144</span>
+<span id="1145">1145</span>
+<span id="1146">1146</span>
+<span id="1147">1147</span>
+<span id="1148">1148</span>
+<span id="1149">1149</span>
+<span id="1150">1150</span>
+<span id="1151">1151</span>
+<span id="1152">1152</span>
+<span id="1153">1153</span>
+<span id="1154">1154</span>
+<span id="1155">1155</span>
+<span id="1156">1156</span>
+<span id="1157">1157</span>
+<span id="1158">1158</span>
+<span id="1159">1159</span>
+<span id="1160">1160</span>
+<span id="1161">1161</span>
+<span id="1162">1162</span>
+<span id="1163">1163</span>
+<span id="1164">1164</span>
+<span id="1165">1165</span>
+<span id="1166">1166</span>
+<span id="1167">1167</span>
+<span id="1168">1168</span>
+<span id="1169">1169</span>
+<span id="1170">1170</span>
+<span id="1171">1171</span>
+<span id="1172">1172</span>
+<span id="1173">1173</span>
+<span id="1174">1174</span>
+<span id="1175">1175</span>
+<span id="1176">1176</span>
+<span id="1177">1177</span>
+<span id="1178">1178</span>
+<span id="1179">1179</span>
+<span id="1180">1180</span>
+<span id="1181">1181</span>
+<span id="1182">1182</span>
+<span id="1183">1183</span>
+<span id="1184">1184</span>
+<span id="1185">1185</span>
+<span id="1186">1186</span>
+<span id="1187">1187</span>
+<span id="1188">1188</span>
+<span id="1189">1189</span>
+<span id="1190">1190</span>
+<span id="1191">1191</span>
+<span id="1192">1192</span>
+<span id="1193">1193</span>
+<span id="1194">1194</span>
+<span id="1195">1195</span>
+<span id="1196">1196</span>
+<span id="1197">1197</span>
+<span id="1198">1198</span>
+<span id="1199">1199</span>
+<span id="1200">1200</span>
+<span id="1201">1201</span>
+<span id="1202">1202</span>
+<span id="1203">1203</span>
+<span id="1204">1204</span>
+<span id="1205">1205</span>
+<span id="1206">1206</span>
+<span id="1207">1207</span>
+<span id="1208">1208</span>
+<span id="1209">1209</span>
+<span id="1210">1210</span>
+<span id="1211">1211</span>
+<span id="1212">1212</span>
+<span id="1213">1213</span>
+<span id="1214">1214</span>
+<span id="1215">1215</span>
+<span id="1216">1216</span>
+<span id="1217">1217</span>
+<span id="1218">1218</span>
+<span id="1219">1219</span>
+<span id="1220">1220</span>
+<span id="1221">1221</span>
+<span id="1222">1222</span>
+<span id="1223">1223</span>
+<span id="1224">1224</span>
+<span id="1225">1225</span>
+<span id="1226">1226</span>
+<span id="1227">1227</span>
+<span id="1228">1228</span>
+<span id="1229">1229</span>
+<span id="1230">1230</span>
+<span id="1231">1231</span>
+<span id="1232">1232</span>
+<span id="1233">1233</span>
+<span id="1234">1234</span>
+<span id="1235">1235</span>
+<span id="1236">1236</span>
+<span id="1237">1237</span>
+<span id="1238">1238</span>
+<span id="1239">1239</span>
+<span id="1240">1240</span>
+<span id="1241">1241</span>
+<span id="1242">1242</span>
+<span id="1243">1243</span>
+<span id="1244">1244</span>
+<span id="1245">1245</span>
+<span id="1246">1246</span>
+<span id="1247">1247</span>
+<span id="1248">1248</span>
+<span id="1249">1249</span>
+<span id="1250">1250</span>
+<span id="1251">1251</span>
+<span id="1252">1252</span>
+<span id="1253">1253</span>
+<span id="1254">1254</span>
+<span id="1255">1255</span>
+<span id="1256">1256</span>
+<span id="1257">1257</span>
+<span id="1258">1258</span>
+<span id="1259">1259</span>
+<span id="1260">1260</span>
+<span id="1261">1261</span>
+<span id="1262">1262</span>
+<span id="1263">1263</span>
+<span id="1264">1264</span>
+<span id="1265">1265</span>
+<span id="1266">1266</span>
+<span id="1267">1267</span>
+<span id="1268">1268</span>
+<span id="1269">1269</span>
+<span id="1270">1270</span>
+<span id="1271">1271</span>
+<span id="1272">1272</span>
+<span id="1273">1273</span>
+<span id="1274">1274</span>
+<span id="1275">1275</span>
+<span id="1276">1276</span>
+<span id="1277">1277</span>
+<span id="1278">1278</span>
+<span id="1279">1279</span>
+<span id="1280">1280</span>
+<span id="1281">1281</span>
+<span id="1282">1282</span>
+<span id="1283">1283</span>
+<span id="1284">1284</span>
+<span id="1285">1285</span>
+<span id="1286">1286</span>
+<span id="1287">1287</span>
+<span id="1288">1288</span>
+<span id="1289">1289</span>
+<span id="1290">1290</span>
+<span id="1291">1291</span>
+<span id="1292">1292</span>
+<span id="1293">1293</span>
+<span id="1294">1294</span>
+<span id="1295">1295</span>
+<span id="1296">1296</span>
+<span id="1297">1297</span>
+<span id="1298">1298</span>
+<span id="1299">1299</span>
+<span id="1300">1300</span>
+<span id="1301">1301</span>
+<span id="1302">1302</span>
+<span id="1303">1303</span>
+<span id="1304">1304</span>
+<span id="1305">1305</span>
+<span id="1306">1306</span>
+<span id="1307">1307</span>
+<span id="1308">1308</span>
+<span id="1309">1309</span>
+<span id="1310">1310</span>
+<span id="1311">1311</span>
+<span id="1312">1312</span>
+<span id="1313">1313</span>
+<span id="1314">1314</span>
+<span id="1315">1315</span>
+<span id="1316">1316</span>
+<span id="1317">1317</span>
+<span id="1318">1318</span>
+<span id="1319">1319</span>
+<span id="1320">1320</span>
+<span id="1321">1321</span>
+<span id="1322">1322</span>
+<span id="1323">1323</span>
+<span id="1324">1324</span>
+<span id="1325">1325</span>
+<span id="1326">1326</span>
+<span id="1327">1327</span>
+<span id="1328">1328</span>
+<span id="1329">1329</span>
 </pre><pre class="rust"><code><span class="doccomment">//! `CodeBlock`</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This module is for the `CodeBlock` which implements a function representation in the VM</span>
@@ -1057,15 +1342,17 @@
 <span class="kw">use</span> <span class="kw">crate</span>::{
     <span class="ident">builtins</span>::{
         <span class="ident">function</span>::{
-            <span class="ident">arguments::Arguments</span>, <span class="ident">Captures</span>, <span class="ident">ClosureFunctionSignature</span>, <span class="ident">Function</span>,
-            <span class="ident">NativeFunctionSignature</span>, <span class="ident">ThisMode</span>,
+            <span class="ident">arguments::Arguments</span>, <span class="ident">ClassFieldDefinition</span>, <span class="ident">ConstructorKind</span>, <span class="ident">Function</span>, <span class="ident">ThisMode</span>,
         },
         <span class="ident">generator</span>::{<span class="ident">Generator</span>, <span class="ident">GeneratorContext</span>, <span class="ident">GeneratorState</span>},
+        <span class="ident">promise::PromiseCapability</span>,
     },
     <span class="ident">context::intrinsics::StandardConstructors</span>,
-    <span class="ident">environments</span>::{<span class="ident">BindingLocator</span>, <span class="ident">CompileTimeEnvironment</span>, <span class="ident">DeclarativeEnvironmentStack</span>},
-    <span class="ident">object</span>::{<span class="ident">internal_methods::get_prototype_from_constructor</span>, <span class="ident">JsObject</span>, <span class="ident">ObjectData</span>},
-    <span class="ident">property</span>::{<span class="ident">PropertyDescriptor</span>, <span class="ident">PropertyKey</span>},
+    <span class="ident">environments</span>::{<span class="ident">BindingLocator</span>, <span class="ident">CompileTimeEnvironment</span>},
+    <span class="ident">object</span>::{
+        <span class="ident">internal_methods::get_prototype_from_constructor</span>, <span class="ident">JsObject</span>, <span class="ident">ObjectData</span>, <span class="ident">PrivateElement</span>,
+    },
+    <span class="ident">property::PropertyDescriptor</span>,
     <span class="ident">syntax::ast::node::FormalParameterList</span>,
     <span class="ident">vm::call_frame::GeneratorResumeKind</span>,
     <span class="ident">vm</span>::{<span class="ident">call_frame::FinallyReturn</span>, <span class="ident">CallFrame</span>, <span class="ident">Opcode</span>},
@@ -1106,6 +1393,7 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Trace</span>, <span class="ident">Finalize</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CodeBlock</span> {
     <span class="doccomment">/// Name of this function</span>
+    <span class="attribute">#[<span class="ident">unsafe_ignore_trace</span>]</span>
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">name</span>: <span class="ident">Sym</span>,
 
     <span class="doccomment">/// The number of arguments expected.</span>
@@ -1114,10 +1402,7 @@
     <span class="doccomment">/// Is this function in strict mode.</span>
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">strict</span>: <span class="ident">bool</span>,
 
-    <span class="doccomment">/// Is this function a constructor.</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">constructor</span>: <span class="ident">bool</span>,
-
-    <span class="doccomment">/// [[ThisMode]]</span>
+    <span class="doccomment">/// \[\[ThisMode\]\]</span>
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">this_mode</span>: <span class="ident">ThisMode</span>,
 
     <span class="doccomment">/// Parameters passed to this function.</span>
@@ -1131,6 +1416,7 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">literals</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">JsValue</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// Property field names.</span>
+    <span class="attribute">#[<span class="ident">unsafe_ignore_trace</span>]</span>
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">names</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Sym</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// Locators for all bindings in the codeblock.</span>
@@ -1141,26 +1427,28 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">num_bindings</span>: <span class="ident">usize</span>,
 
     <span class="doccomment">/// Functions inside this function</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">functions</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Gc</span><span class="op">&lt;</span><span class="ident">CodeBlock</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-
-    <span class="doccomment">/// Indicates if the codeblock contains a lexical name `arguments`</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">lexical_name_argument</span>: <span class="ident">bool</span>,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">functions</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Gc</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// The `arguments` binding location of the function, if set.</span>
     <span class="attribute">#[<span class="ident">unsafe_ignore_trace</span>]</span>
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">arguments_binding</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BindingLocator</span><span class="op">&gt;</span>,
 
-    <span class="doccomment">/// Similar to the `[[ClassFieldInitializerName]]` slot in the spec.</span>
-    <span class="doccomment">/// Holds class field names that are computed at class declaration time.</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">computed_field_names</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Cell</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PropertyKey</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-
     <span class="doccomment">/// Compile time environments in this function.</span>
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">compile_environments</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Gc</span><span class="op">&lt;</span><span class="ident">Cell</span><span class="op">&lt;</span><span class="ident">CompileTimeEnvironment</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+
+    <span class="doccomment">/// The `[[IsClassConstructor]]` internal slot.</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">is_class_constructor</span>: <span class="ident">bool</span>,
+
+    <span class="doccomment">/// Marks the location in the code where the function environment in pushed.</span>
+    <span class="doccomment">/// This is only relevant for functions with expressions in the parameters.</span>
+    <span class="doccomment">/// We execute the parameter expressions in the function code and push the function environment afterward.</span>
+    <span class="doccomment">/// When the execution of the parameter expressions throws an error, we do not need to pop the function environment.</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">function_environment_push_location</span>: <span class="ident">u32</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">CodeBlock</span> {
     <span class="doccomment">/// Constructs a new `CodeBlock`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">name</span>: <span class="ident">Sym</span>, <span class="ident">length</span>: <span class="ident">u32</span>, <span class="ident">strict</span>: <span class="ident">bool</span>, <span class="ident">constructor</span>: <span class="ident">bool</span>) -&gt; <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">name</span>: <span class="ident">Sym</span>, <span class="ident">length</span>: <span class="ident">u32</span>, <span class="ident">strict</span>: <span class="ident">bool</span>) -&gt; <span class="self">Self</span> {
         <span class="self">Self</span> {
             <span class="ident">code</span>: <span class="ident">Vec::new</span>(),
             <span class="ident">literals</span>: <span class="ident">Vec::new</span>(),
@@ -1171,13 +1459,12 @@
             <span class="ident">name</span>,
             <span class="ident">length</span>,
             <span class="ident">strict</span>,
-            <span class="ident">constructor</span>,
             <span class="ident">this_mode</span>: <span class="ident">ThisMode::Global</span>,
             <span class="ident">params</span>: <span class="ident">FormalParameterList::default</span>(),
-            <span class="ident">lexical_name_argument</span>: <span class="bool-val">false</span>,
             <span class="ident">arguments_binding</span>: <span class="prelude-val">None</span>,
-            <span class="ident">computed_field_names</span>: <span class="prelude-val">None</span>,
             <span class="ident">compile_environments</span>: <span class="ident">Vec::new</span>(),
+            <span class="ident">is_class_constructor</span>: <span class="bool-val">false</span>,
+            <span class="ident">function_environment_push_location</span>: <span class="number">0</span>,
         }
     }
 
@@ -1253,6 +1540,8 @@
             <span class="op">|</span> <span class="ident">Opcode::CallWithRest</span>
             <span class="op">|</span> <span class="ident">Opcode::New</span>
             <span class="op">|</span> <span class="ident">Opcode::NewWithRest</span>
+            <span class="op">|</span> <span class="ident">Opcode::SuperCall</span>
+            <span class="op">|</span> <span class="ident">Opcode::SuperCallWithRest</span>
             <span class="op">|</span> <span class="ident">Opcode::ForInLoopInitIterator</span>
             <span class="op">|</span> <span class="ident">Opcode::ForInLoopNext</span>
             <span class="op">|</span> <span class="ident">Opcode::ConcatToString</span>
@@ -1271,7 +1560,7 @@
                 <span class="kw-2">*</span><span class="ident">pc</span> <span class="op">+</span><span class="op">=</span> <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>();
                 <span class="macro">format!</span>(<span class="string">&quot;{operand1}, {operand2}&quot;</span>)
             }
-            <span class="ident">Opcode::GetFunction</span> <span class="op">|</span> <span class="ident">Opcode::GetGenerator</span> =&gt; {
+            <span class="ident">Opcode::GetFunction</span> <span class="op">|</span> <span class="ident">Opcode::GetFunctionAsync</span> <span class="op">|</span> <span class="ident">Opcode::GetGenerator</span> =&gt; {
                 <span class="kw">let</span> <span class="ident">operand</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>(<span class="kw-2">*</span><span class="ident">pc</span>);
                 <span class="kw-2">*</span><span class="ident">pc</span> <span class="op">+</span><span class="op">=</span> <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>();
                 <span class="macro">format!</span>(
@@ -1305,11 +1594,17 @@
             <span class="op">|</span> <span class="ident">Opcode::DefineClassGetterByName</span>
             <span class="op">|</span> <span class="ident">Opcode::SetPropertySetterByName</span>
             <span class="op">|</span> <span class="ident">Opcode::DefineClassSetterByName</span>
-            <span class="op">|</span> <span class="ident">Opcode::SetPrivateValue</span>
+            <span class="op">|</span> <span class="ident">Opcode::AssignPrivateField</span>
+            <span class="op">|</span> <span class="ident">Opcode::SetPrivateField</span>
+            <span class="op">|</span> <span class="ident">Opcode::SetPrivateMethod</span>
             <span class="op">|</span> <span class="ident">Opcode::SetPrivateSetter</span>
             <span class="op">|</span> <span class="ident">Opcode::SetPrivateGetter</span>
             <span class="op">|</span> <span class="ident">Opcode::GetPrivateField</span>
-            <span class="op">|</span> <span class="ident">Opcode::DeletePropertyByName</span> =&gt; {
+            <span class="op">|</span> <span class="ident">Opcode::DeletePropertyByName</span>
+            <span class="op">|</span> <span class="ident">Opcode::PushClassFieldPrivate</span>
+            <span class="op">|</span> <span class="ident">Opcode::PushClassPrivateGetter</span>
+            <span class="op">|</span> <span class="ident">Opcode::PushClassPrivateSetter</span>
+            <span class="op">|</span> <span class="ident">Opcode::PushClassPrivateMethod</span> =&gt; {
                 <span class="kw">let</span> <span class="ident">operand</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>(<span class="kw-2">*</span><span class="ident">pc</span>);
                 <span class="kw-2">*</span><span class="ident">pc</span> <span class="op">+</span><span class="op">=</span> <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>();
                 <span class="macro">format!</span>(
@@ -1318,6 +1613,7 @@
                 )
             }
             <span class="ident">Opcode::Pop</span>
+            <span class="op">|</span> <span class="ident">Opcode::PopIfThrown</span>
             <span class="op">|</span> <span class="ident">Opcode::Dup</span>
             <span class="op">|</span> <span class="ident">Opcode::Swap</span>
             <span class="op">|</span> <span class="ident">Opcode::PushZero</span>
@@ -1331,6 +1627,8 @@
             <span class="op">|</span> <span class="ident">Opcode::PushUndefined</span>
             <span class="op">|</span> <span class="ident">Opcode::PushEmptyObject</span>
             <span class="op">|</span> <span class="ident">Opcode::PushClassPrototype</span>
+            <span class="op">|</span> <span class="ident">Opcode::SetClassPrototype</span>
+            <span class="op">|</span> <span class="ident">Opcode::SetHomeObject</span>
             <span class="op">|</span> <span class="ident">Opcode::Add</span>
             <span class="op">|</span> <span class="ident">Opcode::Sub</span>
             <span class="op">|</span> <span class="ident">Opcode::Div</span>
@@ -1381,6 +1679,7 @@
             <span class="op">|</span> <span class="ident">Opcode::FinallyStart</span>
             <span class="op">|</span> <span class="ident">Opcode::FinallyEnd</span>
             <span class="op">|</span> <span class="ident">Opcode::This</span>
+            <span class="op">|</span> <span class="ident">Opcode::Super</span>
             <span class="op">|</span> <span class="ident">Opcode::Return</span>
             <span class="op">|</span> <span class="ident">Opcode::PopEnvironment</span>
             <span class="op">|</span> <span class="ident">Opcode::LoopStart</span>
@@ -1388,7 +1687,6 @@
             <span class="op">|</span> <span class="ident">Opcode::LoopEnd</span>
             <span class="op">|</span> <span class="ident">Opcode::InitIterator</span>
             <span class="op">|</span> <span class="ident">Opcode::IteratorNext</span>
-            <span class="op">|</span> <span class="ident">Opcode::IteratorNextFull</span>
             <span class="op">|</span> <span class="ident">Opcode::IteratorClose</span>
             <span class="op">|</span> <span class="ident">Opcode::IteratorToArray</span>
             <span class="op">|</span> <span class="ident">Opcode::RequireObjectCoercible</span>
@@ -1403,7 +1701,9 @@
             <span class="op">|</span> <span class="ident">Opcode::PopOnReturnSub</span>
             <span class="op">|</span> <span class="ident">Opcode::Yield</span>
             <span class="op">|</span> <span class="ident">Opcode::GeneratorNext</span>
-            <span class="op">|</span> <span class="ident">Opcode::PushClassComputedFieldName</span>
+            <span class="op">|</span> <span class="ident">Opcode::PushClassField</span>
+            <span class="op">|</span> <span class="ident">Opcode::SuperCallDerived</span>
+            <span class="op">|</span> <span class="ident">Opcode::Await</span>
             <span class="op">|</span> <span class="ident">Opcode::Nop</span> =&gt; <span class="ident">String::new</span>(),
         }
     }
@@ -1480,10 +1780,25 @@
 }
 
 <span class="doccomment">/// Creates a new function object.</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">create_function_object</span>(<span class="ident">code</span>: <span class="ident">Gc</span><span class="op">&lt;</span><span class="ident">CodeBlock</span><span class="op">&gt;</span>, <span class="ident">context</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Context</span>) -&gt; <span class="ident">JsObject</span> {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">create_function_object</span>(
+    <span class="ident">code</span>: <span class="ident">Gc</span><span class="op">&lt;</span><span class="ident">CodeBlock</span><span class="op">&gt;</span>,
+    <span class="ident">r#async</span>: <span class="ident">bool</span>,
+    <span class="ident">prototype</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">JsObject</span><span class="op">&gt;</span>,
+    <span class="ident">context</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Context</span>,
+) -&gt; <span class="ident">JsObject</span> {
     <span class="kw">let</span> <span class="ident">_timer</span> <span class="op">=</span> <span class="ident">Profiler::global</span>().<span class="ident">start_event</span>(<span class="string">&quot;JsVmFunction::new&quot;</span>, <span class="string">&quot;vm&quot;</span>);
 
-    <span class="kw">let</span> <span class="ident">function_prototype</span> <span class="op">=</span> <span class="ident">context</span>.<span class="ident">intrinsics</span>().<span class="ident">constructors</span>().<span class="ident">function</span>().<span class="ident">prototype</span>();
+    <span class="kw">let</span> <span class="ident">function_prototype</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">prototype</span>) <span class="op">=</span> <span class="ident">prototype</span> {
+        <span class="ident">prototype</span>
+    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">r#async</span> {
+        <span class="ident">context</span>
+            .<span class="ident">intrinsics</span>()
+            .<span class="ident">constructors</span>()
+            .<span class="ident">async_function</span>()
+            .<span class="ident">prototype</span>()
+    } <span class="kw">else</span> {
+        <span class="ident">context</span>.<span class="ident">intrinsics</span>().<span class="ident">constructors</span>().<span class="ident">function</span>().<span class="ident">prototype</span>()
+    };
 
     <span class="kw">let</span> <span class="ident">prototype</span> <span class="op">=</span> <span class="ident">context</span>.<span class="ident">construct_object</span>();
 
@@ -1501,9 +1816,32 @@
         .<span class="ident">configurable</span>(<span class="bool-val">true</span>)
         .<span class="ident">build</span>();
 
-    <span class="kw">let</span> <span class="ident">function</span> <span class="op">=</span> <span class="ident">Function::Ordinary</span> {
-        <span class="ident">code</span>,
-        <span class="ident">environments</span>: <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">clone</span>(),
+    <span class="kw">let</span> <span class="ident">function</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">r#async</span> {
+        <span class="kw">let</span> <span class="ident">promise_capability</span> <span class="op">=</span> <span class="ident">PromiseCapability::new</span>(
+            <span class="kw-2">&amp;</span><span class="ident">context</span>
+                .<span class="ident">intrinsics</span>()
+                .<span class="ident">constructors</span>()
+                .<span class="ident">promise</span>()
+                .<span class="ident">constructor</span>()
+                .<span class="ident">into</span>(),
+            <span class="ident">context</span>,
+        )
+        .<span class="ident">expect</span>(<span class="string">&quot;cannot  fail per spec&quot;</span>);
+
+        <span class="ident">Function::Async</span> {
+            <span class="ident">code</span>,
+            <span class="ident">environments</span>: <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">clone</span>(),
+            <span class="ident">promise_capability</span>,
+        }
+    } <span class="kw">else</span> {
+        <span class="ident">Function::Ordinary</span> {
+            <span class="ident">code</span>,
+            <span class="ident">environments</span>: <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">clone</span>(),
+            <span class="ident">constructor_kind</span>: <span class="ident">ConstructorKind::Base</span>,
+            <span class="ident">home_object</span>: <span class="prelude-val">None</span>,
+            <span class="ident">fields</span>: <span class="ident">Vec::new</span>(),
+            <span class="ident">private_methods</span>: <span class="ident">Vec::new</span>(),
+        }
     };
 
     <span class="kw">let</span> <span class="ident">constructor</span> <span class="op">=</span>
@@ -1527,9 +1865,11 @@
         .<span class="ident">configurable</span>(<span class="bool-val">false</span>)
         .<span class="ident">build</span>();
 
-    <span class="ident">constructor</span>
-        .<span class="ident">define_property_or_throw</span>(<span class="string">&quot;prototype&quot;</span>, <span class="ident">prototype_property</span>, <span class="ident">context</span>)
-        .<span class="ident">expect</span>(<span class="string">&quot;failed to define the prototype property of the function&quot;</span>);
+    <span class="kw">if</span> <span class="op">!</span><span class="ident">r#async</span> {
+        <span class="ident">constructor</span>
+            .<span class="ident">define_property_or_throw</span>(<span class="string">&quot;prototype&quot;</span>, <span class="ident">prototype_property</span>, <span class="ident">context</span>)
+            .<span class="ident">expect</span>(<span class="string">&quot;failed to define the prototype property of the function&quot;</span>);
+    }
     <span class="ident">constructor</span>
         .<span class="ident">define_property_or_throw</span>(<span class="string">&quot;name&quot;</span>, <span class="ident">name_property</span>, <span class="ident">context</span>)
         .<span class="ident">expect</span>(<span class="string">&quot;failed to define the name property of the function&quot;</span>);
@@ -1598,24 +1938,6 @@
     <span class="ident">constructor</span>
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum</span> <span class="ident">FunctionBody</span> {
-    <span class="ident">Ordinary</span> {
-        <span class="ident">code</span>: <span class="ident">Gc</span><span class="op">&lt;</span><span class="ident">CodeBlock</span><span class="op">&gt;</span>,
-        <span class="ident">environments</span>: <span class="ident">DeclarativeEnvironmentStack</span>,
-    },
-    <span class="ident">Native</span> {
-        <span class="ident">function</span>: <span class="ident">NativeFunctionSignature</span>,
-    },
-    <span class="ident">Closure</span> {
-        <span class="ident">function</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClosureFunctionSignature</span><span class="op">&gt;</span>,
-        <span class="ident">captures</span>: <span class="ident">Captures</span>,
-    },
-    <span class="ident">Generator</span> {
-        <span class="ident">code</span>: <span class="ident">Gc</span><span class="op">&lt;</span><span class="ident">CodeBlock</span><span class="op">&gt;</span>,
-        <span class="ident">environments</span>: <span class="ident">DeclarativeEnvironmentStack</span>,
-    },
-}
-
 <span class="kw">impl</span> <span class="ident">JsObject</span> {
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">call_internal</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -1629,85 +1951,80 @@
             <span class="kw">return</span> <span class="ident">context</span>.<span class="ident">throw_type_error</span>(<span class="string">&quot;not a callable function&quot;</span>);
         }
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">construct</span> <span class="op">=</span> <span class="bool-val">false</span>;
+        <span class="kw">let</span> <span class="ident">object</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">borrow</span>();
+        <span class="kw">let</span> <span class="ident">function_object</span> <span class="op">=</span> <span class="ident">object</span>.<span class="ident">as_function</span>().<span class="ident">expect</span>(<span class="string">&quot;not a function&quot;</span>);
 
-        <span class="kw">let</span> <span class="ident">body</span> <span class="op">=</span> {
-            <span class="kw">let</span> <span class="ident">object</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">borrow</span>();
-            <span class="kw">let</span> <span class="ident">function</span> <span class="op">=</span> <span class="ident">object</span>.<span class="ident">as_function</span>().<span class="ident">expect</span>(<span class="string">&quot;not a function&quot;</span>);
+        <span class="kw">match</span> <span class="ident">function_object</span> {
+            <span class="ident">Function::Native</span> {
+                <span class="ident">function</span>,
+                <span class="ident">constructor</span>,
+            } =&gt; {
+                <span class="kw">let</span> <span class="ident">function</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">function</span>;
+                <span class="kw">let</span> <span class="ident">constructor</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">constructor</span>;
+                <span class="ident">drop</span>(<span class="ident">object</span>);
 
-            <span class="kw">match</span> <span class="ident">function</span> {
-                <span class="ident">Function::Native</span> {
-                    <span class="ident">function</span>,
-                    <span class="ident">constructor</span>,
-                } =&gt; {
-                    <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">constructor</span> {
-                        <span class="ident">construct</span> <span class="op">=</span> <span class="bool-val">true</span>;
-                    }
-
-                    <span class="ident">FunctionBody::Native</span> {
-                        <span class="ident">function</span>: <span class="kw-2">*</span><span class="ident">function</span>,
-                    }
+                <span class="kw">if</span> <span class="ident">constructor</span>.<span class="ident">is_some</span>() {
+                    <span class="ident">function</span>(<span class="kw-2">&amp;</span><span class="ident">JsValue::undefined</span>(), <span class="ident">args</span>, <span class="ident">context</span>)
+                } <span class="kw">else</span> {
+                    <span class="ident">function</span>(<span class="ident">this</span>, <span class="ident">args</span>, <span class="ident">context</span>)
                 }
-                <span class="ident">Function::Closure</span> {
-                    <span class="ident">function</span>, <span class="ident">captures</span>, ..
-                } =&gt; <span class="ident">FunctionBody::Closure</span> {
-                    <span class="ident">function</span>: <span class="ident">function</span>.<span class="ident">clone</span>(),
-                    <span class="ident">captures</span>: <span class="ident">captures</span>.<span class="ident">clone</span>(),
-                },
-                <span class="ident">Function::Ordinary</span> { <span class="ident">code</span>, <span class="ident">environments</span> } =&gt; <span class="ident">FunctionBody::Ordinary</span> {
-                    <span class="ident">code</span>: <span class="ident">code</span>.<span class="ident">clone</span>(),
-                    <span class="ident">environments</span>: <span class="ident">environments</span>.<span class="ident">clone</span>(),
-                },
-                <span class="ident">Function::Generator</span> { <span class="ident">code</span>, <span class="ident">environments</span> } =&gt; <span class="ident">FunctionBody::Generator</span> {
-                    <span class="ident">code</span>: <span class="ident">code</span>.<span class="ident">clone</span>(),
-                    <span class="ident">environments</span>: <span class="ident">environments</span>.<span class="ident">clone</span>(),
-                },
             }
-        };
+            <span class="ident">Function::Closure</span> {
+                <span class="ident">function</span>, <span class="ident">captures</span>, ..
+            } =&gt; {
+                <span class="kw">let</span> <span class="ident">function</span> <span class="op">=</span> <span class="ident">function</span>.<span class="ident">clone</span>();
+                <span class="kw">let</span> <span class="ident">captures</span> <span class="op">=</span> <span class="ident">captures</span>.<span class="ident">clone</span>();
+                <span class="ident">drop</span>(<span class="ident">object</span>);
 
-        <span class="kw">match</span> <span class="ident">body</span> {
-            <span class="ident">FunctionBody::Native</span> { <span class="ident">function</span> } <span class="kw">if</span> <span class="ident">construct</span> =&gt; {
-                <span class="ident">function</span>(<span class="kw-2">&amp;</span><span class="ident">JsValue::undefined</span>(), <span class="ident">args</span>, <span class="ident">context</span>)
-            }
-            <span class="ident">FunctionBody::Native</span> { <span class="ident">function</span> } =&gt; <span class="ident">function</span>(<span class="ident">this</span>, <span class="ident">args</span>, <span class="ident">context</span>),
-            <span class="ident">FunctionBody::Closure</span> { <span class="ident">function</span>, <span class="ident">captures</span> } =&gt; {
                 (<span class="ident">function</span>)(<span class="ident">this</span>, <span class="ident">args</span>, <span class="ident">captures</span>, <span class="ident">context</span>)
             }
-            <span class="ident">FunctionBody::Ordinary</span> {
-                <span class="ident">code</span>,
-                <span class="kw-2">mut</span> <span class="ident">environments</span>,
+            <span class="ident">Function::Ordinary</span> {
+                <span class="ident">code</span>, <span class="ident">environments</span>, ..
             } =&gt; {
+                <span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="ident">code</span>.<span class="ident">clone</span>();
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">environments</span> <span class="op">=</span> <span class="ident">environments</span>.<span class="ident">clone</span>();
+                <span class="ident">drop</span>(<span class="ident">object</span>);
+
+                <span class="kw">if</span> <span class="ident">code</span>.<span class="ident">is_class_constructor</span> {
+                    <span class="kw">return</span> <span class="ident">context</span>
+                        .<span class="ident">throw_type_error</span>(<span class="string">&quot;Class constructor cannot be invoked without &#39;new&#39;&quot;</span>);
+                }
+
                 <span class="ident">std::mem::swap</span>(<span class="kw-2">&amp;mut</span> <span class="ident">environments</span>, <span class="kw-2">&amp;mut</span> <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>);
 
                 <span class="kw">let</span> <span class="ident">lexical_this_mode</span> <span class="op">=</span> <span class="ident">code</span>.<span class="ident">this_mode</span> <span class="op">==</span> <span class="ident">ThisMode::Lexical</span>;
 
                 <span class="kw">let</span> <span class="ident">this</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">lexical_this_mode</span> {
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">this</span>) <span class="op">=</span> <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">get_last_this</span>() {
-                        <span class="ident">this</span>
-                    } <span class="kw">else</span> {
-                        <span class="ident">context</span>.<span class="ident">global_object</span>().<span class="ident">clone</span>().<span class="ident">into</span>()
-                    }
+                    <span class="prelude-val">None</span>
                 } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">code</span>.<span class="ident">strict</span> {
-                    <span class="ident">this</span>.<span class="ident">clone</span>()
+                    <span class="prelude-val">Some</span>(<span class="ident">this</span>.<span class="ident">clone</span>())
                 } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">this</span>.<span class="ident">is_null_or_undefined</span>() {
-                    <span class="ident">context</span>.<span class="ident">global_object</span>().<span class="ident">clone</span>().<span class="ident">into</span>()
+                    <span class="prelude-val">Some</span>(<span class="ident">context</span>.<span class="ident">global_object</span>().<span class="ident">clone</span>().<span class="ident">into</span>())
                 } <span class="kw">else</span> {
-                    <span class="ident">this</span>.<span class="ident">to_object</span>(<span class="ident">context</span>)
-                        .<span class="ident">expect</span>(<span class="string">&quot;conversion cannot fail&quot;</span>)
-                        .<span class="ident">into</span>()
+                    <span class="prelude-val">Some</span>(
+                        <span class="ident">this</span>.<span class="ident">to_object</span>(<span class="ident">context</span>)
+                            .<span class="ident">expect</span>(<span class="string">&quot;conversion cannot fail&quot;</span>)
+                            .<span class="ident">into</span>(),
+                    )
                 };
 
                 <span class="kw">if</span> <span class="ident">code</span>.<span class="ident">params</span>.<span class="ident">has_expressions</span>() {
                     <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">push_function</span>(
                         <span class="ident">code</span>.<span class="ident">num_bindings</span>,
                         <span class="ident">code</span>.<span class="ident">compile_environments</span>[<span class="number">1</span>].<span class="ident">clone</span>(),
-                        <span class="ident">this</span>.<span class="ident">clone</span>(),
+                        <span class="ident">this</span>,
+                        <span class="self">self</span>.<span class="ident">clone</span>(),
+                        <span class="prelude-val">None</span>,
+                        <span class="ident">lexical_this_mode</span>,
                     );
                 } <span class="kw">else</span> {
                     <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">push_function</span>(
                         <span class="ident">code</span>.<span class="ident">num_bindings</span>,
                         <span class="ident">code</span>.<span class="ident">compile_environments</span>[<span class="number">0</span>].<span class="ident">clone</span>(),
-                        <span class="ident">this</span>.<span class="ident">clone</span>(),
+                        <span class="ident">this</span>,
+                        <span class="self">self</span>.<span class="ident">clone</span>(),
+                        <span class="prelude-val">None</span>,
+                        <span class="ident">lexical_this_mode</span>,
                     );
                 }
 
@@ -1753,29 +2070,30 @@
                 <span class="kw">let</span> <span class="ident">has_expressions</span> <span class="op">=</span> <span class="ident">code</span>.<span class="ident">params</span>.<span class="ident">has_expressions</span>();
 
                 <span class="ident">context</span>.<span class="ident">vm</span>.<span class="ident">push_frame</span>(<span class="ident">CallFrame</span> {
-                    <span class="ident">prev</span>: <span class="prelude-val">None</span>,
                     <span class="ident">code</span>,
-                    <span class="ident">this</span>,
                     <span class="ident">pc</span>: <span class="number">0</span>,
                     <span class="ident">catch</span>: <span class="ident">Vec::new</span>(),
                     <span class="ident">finally_return</span>: <span class="ident">FinallyReturn::None</span>,
                     <span class="ident">finally_jump</span>: <span class="ident">Vec::new</span>(),
                     <span class="ident">pop_on_return</span>: <span class="number">0</span>,
-                    <span class="ident">loop_env_stack</span>: <span class="macro">vec!</span>[<span class="number">0</span>],
-                    <span class="ident">try_env_stack</span>: <span class="macro">vec!</span>[<span class="ident"><span class="kw">crate</span>::vm::TryStackEntry</span> {
+                    <span class="ident">loop_env_stack</span>: <span class="ident">Vec::from</span>([<span class="number">0</span>]),
+                    <span class="ident">try_env_stack</span>: <span class="ident">Vec::from</span>([<span class="ident"><span class="kw">crate</span>::vm::TryStackEntry</span> {
                         <span class="ident">num_env</span>: <span class="number">0</span>,
                         <span class="ident">num_loop_stack_entries</span>: <span class="number">0</span>,
-                    }],
+                    }]),
                     <span class="ident">param_count</span>,
                     <span class="ident">arg_count</span>,
                     <span class="ident">generator_resume_kind</span>: <span class="ident">GeneratorResumeKind::Normal</span>,
+                    <span class="ident">thrown</span>: <span class="bool-val">false</span>,
                 });
 
                 <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">context</span>.<span class="ident">run</span>();
-                <span class="ident">context</span>.<span class="ident">vm</span>.<span class="ident">pop_frame</span>().<span class="ident">expect</span>(<span class="string">&quot;must have frame&quot;</span>);
+                <span class="kw">let</span> <span class="ident">frame</span> <span class="op">=</span> <span class="ident">context</span>.<span class="ident">vm</span>.<span class="ident">pop_frame</span>().<span class="ident">expect</span>(<span class="string">&quot;must have frame&quot;</span>);
 
                 <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">pop</span>();
-                <span class="kw">if</span> <span class="ident">has_expressions</span> {
+                <span class="kw">if</span> <span class="ident">has_expressions</span>
+                    <span class="op">&amp;&amp;</span> <span class="ident">frame</span>.<span class="ident">pc</span> <span class="op">&gt;</span> <span class="ident">frame</span>.<span class="ident">code</span>.<span class="ident">function_environment_push_location</span> <span class="kw">as</span> <span class="ident">usize</span>
+                {
                     <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">pop</span>();
                 }
 
@@ -1784,37 +2102,167 @@
                 <span class="kw">let</span> (<span class="ident">result</span>, <span class="kw">_</span>) <span class="op">=</span> <span class="ident">result</span><span class="question-mark">?</span>;
                 <span class="prelude-val">Ok</span>(<span class="ident">result</span>)
             }
-            <span class="ident">FunctionBody::Generator</span> {
+            <span class="ident">Function::Async</span> {
                 <span class="ident">code</span>,
-                <span class="kw-2">mut</span> <span class="ident">environments</span>,
+                <span class="ident">environments</span>,
+                <span class="ident">promise_capability</span>,
             } =&gt; {
+                <span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="ident">code</span>.<span class="ident">clone</span>();
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">environments</span> <span class="op">=</span> <span class="ident">environments</span>.<span class="ident">clone</span>();
+                <span class="kw">let</span> <span class="ident">promise</span> <span class="op">=</span> <span class="ident">promise_capability</span>.<span class="ident">promise</span>().<span class="ident">clone</span>();
+                <span class="ident">drop</span>(<span class="ident">object</span>);
+
                 <span class="ident">std::mem::swap</span>(<span class="kw-2">&amp;mut</span> <span class="ident">environments</span>, <span class="kw-2">&amp;mut</span> <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>);
 
                 <span class="kw">let</span> <span class="ident">lexical_this_mode</span> <span class="op">=</span> <span class="ident">code</span>.<span class="ident">this_mode</span> <span class="op">==</span> <span class="ident">ThisMode::Lexical</span>;
 
                 <span class="kw">let</span> <span class="ident">this</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">lexical_this_mode</span> {
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">this</span>) <span class="op">=</span> <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">get_last_this</span>() {
-                        <span class="ident">this</span>
-                    } <span class="kw">else</span> {
-                        <span class="ident">context</span>.<span class="ident">global_object</span>().<span class="ident">clone</span>().<span class="ident">into</span>()
-                    }
-                } <span class="kw">else</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">code</span>.<span class="ident">strict</span> <span class="op">&amp;&amp;</span> <span class="ident">this</span>.<span class="ident">is_null_or_undefined</span>() {
-                    <span class="ident">context</span>.<span class="ident">global_object</span>().<span class="ident">clone</span>().<span class="ident">into</span>()
+                    <span class="prelude-val">None</span>
+                } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">code</span>.<span class="ident">strict</span> {
+                    <span class="prelude-val">Some</span>(<span class="ident">this</span>.<span class="ident">clone</span>())
+                } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">this</span>.<span class="ident">is_null_or_undefined</span>() {
+                    <span class="prelude-val">Some</span>(<span class="ident">context</span>.<span class="ident">global_object</span>().<span class="ident">clone</span>().<span class="ident">into</span>())
                 } <span class="kw">else</span> {
-                    <span class="ident">this</span>.<span class="ident">clone</span>()
+                    <span class="prelude-val">Some</span>(
+                        <span class="ident">this</span>.<span class="ident">to_object</span>(<span class="ident">context</span>)
+                            .<span class="ident">expect</span>(<span class="string">&quot;conversion cannot fail&quot;</span>)
+                            .<span class="ident">into</span>(),
+                    )
                 };
 
                 <span class="kw">if</span> <span class="ident">code</span>.<span class="ident">params</span>.<span class="ident">has_expressions</span>() {
                     <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">push_function</span>(
                         <span class="ident">code</span>.<span class="ident">num_bindings</span>,
                         <span class="ident">code</span>.<span class="ident">compile_environments</span>[<span class="number">1</span>].<span class="ident">clone</span>(),
-                        <span class="ident">this</span>.<span class="ident">clone</span>(),
+                        <span class="ident">this</span>,
+                        <span class="self">self</span>.<span class="ident">clone</span>(),
+                        <span class="prelude-val">None</span>,
+                        <span class="ident">lexical_this_mode</span>,
                     );
                 } <span class="kw">else</span> {
                     <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">push_function</span>(
                         <span class="ident">code</span>.<span class="ident">num_bindings</span>,
                         <span class="ident">code</span>.<span class="ident">compile_environments</span>[<span class="number">0</span>].<span class="ident">clone</span>(),
-                        <span class="ident">this</span>.<span class="ident">clone</span>(),
+                        <span class="ident">this</span>,
+                        <span class="self">self</span>.<span class="ident">clone</span>(),
+                        <span class="prelude-val">None</span>,
+                        <span class="ident">lexical_this_mode</span>,
+                    );
+                }
+
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">binding</span>) <span class="op">=</span> <span class="ident">code</span>.<span class="ident">arguments_binding</span> {
+                    <span class="kw">let</span> <span class="ident">arguments_obj</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">code</span>.<span class="ident">strict</span> <span class="op">|</span><span class="op">|</span> <span class="op">!</span><span class="ident">code</span>.<span class="ident">params</span>.<span class="ident">is_simple</span>() {
+                        <span class="ident">Arguments::create_unmapped_arguments_object</span>(<span class="ident">args</span>, <span class="ident">context</span>)
+                    } <span class="kw">else</span> {
+                        <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">current</span>();
+                        <span class="ident">Arguments::create_mapped_arguments_object</span>(
+                            <span class="kw-2">&amp;</span><span class="ident">this_function_object</span>,
+                            <span class="kw-2">&amp;</span><span class="ident">code</span>.<span class="ident">params</span>,
+                            <span class="ident">args</span>,
+                            <span class="kw-2">&amp;</span><span class="ident">env</span>,
+                            <span class="ident">context</span>,
+                        )
+                    };
+                    <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">put_value</span>(
+                        <span class="ident">binding</span>.<span class="ident">environment_index</span>(),
+                        <span class="ident">binding</span>.<span class="ident">binding_index</span>(),
+                        <span class="ident">arguments_obj</span>.<span class="ident">into</span>(),
+                    );
+                }
+
+                <span class="kw">let</span> <span class="ident">arg_count</span> <span class="op">=</span> <span class="ident">args</span>.<span class="ident">len</span>();
+
+                <span class="comment">// Push function arguments to the stack.</span>
+                <span class="kw">let</span> <span class="ident">args</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">code</span>.<span class="ident">params</span>.<span class="ident">parameters</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="ident">args</span>.<span class="ident">len</span>() {
+                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">args</span>.<span class="ident">to_vec</span>();
+                    <span class="ident">v</span>.<span class="ident">extend</span>(<span class="macro">vec!</span>[
+                        <span class="ident">JsValue::Undefined</span>;
+                        <span class="ident">code</span>.<span class="ident">params</span>.<span class="ident">parameters</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">args</span>.<span class="ident">len</span>()
+                    ]);
+                    <span class="ident">v</span>
+                } <span class="kw">else</span> {
+                    <span class="ident">args</span>.<span class="ident">to_vec</span>()
+                };
+
+                <span class="kw">for</span> <span class="ident">arg</span> <span class="kw">in</span> <span class="ident">args</span>.<span class="ident">iter</span>().<span class="ident">rev</span>() {
+                    <span class="ident">context</span>.<span class="ident">vm</span>.<span class="ident">push</span>(<span class="ident">arg</span>);
+                }
+
+                <span class="kw">let</span> <span class="ident">param_count</span> <span class="op">=</span> <span class="ident">code</span>.<span class="ident">params</span>.<span class="ident">parameters</span>.<span class="ident">len</span>();
+                <span class="kw">let</span> <span class="ident">has_expressions</span> <span class="op">=</span> <span class="ident">code</span>.<span class="ident">params</span>.<span class="ident">has_expressions</span>();
+
+                <span class="ident">context</span>.<span class="ident">vm</span>.<span class="ident">push_frame</span>(<span class="ident">CallFrame</span> {
+                    <span class="ident">code</span>,
+                    <span class="ident">pc</span>: <span class="number">0</span>,
+                    <span class="ident">catch</span>: <span class="ident">Vec::new</span>(),
+                    <span class="ident">finally_return</span>: <span class="ident">FinallyReturn::None</span>,
+                    <span class="ident">finally_jump</span>: <span class="ident">Vec::new</span>(),
+                    <span class="ident">pop_on_return</span>: <span class="number">0</span>,
+                    <span class="ident">loop_env_stack</span>: <span class="ident">Vec::from</span>([<span class="number">0</span>]),
+                    <span class="ident">try_env_stack</span>: <span class="ident">Vec::from</span>([<span class="ident"><span class="kw">crate</span>::vm::TryStackEntry</span> {
+                        <span class="ident">num_env</span>: <span class="number">0</span>,
+                        <span class="ident">num_loop_stack_entries</span>: <span class="number">0</span>,
+                    }]),
+                    <span class="ident">param_count</span>,
+                    <span class="ident">arg_count</span>,
+                    <span class="ident">generator_resume_kind</span>: <span class="ident">GeneratorResumeKind::Normal</span>,
+                    <span class="ident">thrown</span>: <span class="bool-val">false</span>,
+                });
+
+                <span class="kw">let</span> <span class="ident">_result</span> <span class="op">=</span> <span class="ident">context</span>.<span class="ident">run</span>();
+                <span class="kw">let</span> <span class="ident">frame</span> <span class="op">=</span> <span class="ident">context</span>.<span class="ident">vm</span>.<span class="ident">pop_frame</span>().<span class="ident">expect</span>(<span class="string">&quot;must have frame&quot;</span>);
+
+                <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">pop</span>();
+                <span class="kw">if</span> <span class="ident">has_expressions</span>
+                    <span class="op">&amp;&amp;</span> <span class="ident">frame</span>.<span class="ident">pc</span> <span class="op">&gt;</span> <span class="ident">frame</span>.<span class="ident">code</span>.<span class="ident">function_environment_push_location</span> <span class="kw">as</span> <span class="ident">usize</span>
+                {
+                    <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">pop</span>();
+                }
+
+                <span class="ident">std::mem::swap</span>(<span class="kw-2">&amp;mut</span> <span class="ident">environments</span>, <span class="kw-2">&amp;mut</span> <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>);
+
+                <span class="prelude-val">Ok</span>(<span class="ident">promise</span>.<span class="ident">into</span>())
+            }
+            <span class="ident">Function::Generator</span> { <span class="ident">code</span>, <span class="ident">environments</span> } =&gt; {
+                <span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="ident">code</span>.<span class="ident">clone</span>();
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">environments</span> <span class="op">=</span> <span class="ident">environments</span>.<span class="ident">clone</span>();
+                <span class="ident">drop</span>(<span class="ident">object</span>);
+
+                <span class="ident">std::mem::swap</span>(<span class="kw-2">&amp;mut</span> <span class="ident">environments</span>, <span class="kw-2">&amp;mut</span> <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>);
+
+                <span class="kw">let</span> <span class="ident">lexical_this_mode</span> <span class="op">=</span> <span class="ident">code</span>.<span class="ident">this_mode</span> <span class="op">==</span> <span class="ident">ThisMode::Lexical</span>;
+
+                <span class="kw">let</span> <span class="ident">this</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">lexical_this_mode</span> {
+                    <span class="prelude-val">None</span>
+                } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">code</span>.<span class="ident">strict</span> {
+                    <span class="prelude-val">Some</span>(<span class="ident">this</span>.<span class="ident">clone</span>())
+                } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">this</span>.<span class="ident">is_null_or_undefined</span>() {
+                    <span class="prelude-val">Some</span>(<span class="ident">context</span>.<span class="ident">global_object</span>().<span class="ident">clone</span>().<span class="ident">into</span>())
+                } <span class="kw">else</span> {
+                    <span class="prelude-val">Some</span>(
+                        <span class="ident">this</span>.<span class="ident">to_object</span>(<span class="ident">context</span>)
+                            .<span class="ident">expect</span>(<span class="string">&quot;conversion cannot fail&quot;</span>)
+                            .<span class="ident">into</span>(),
+                    )
+                };
+
+                <span class="kw">if</span> <span class="ident">code</span>.<span class="ident">params</span>.<span class="ident">has_expressions</span>() {
+                    <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">push_function</span>(
+                        <span class="ident">code</span>.<span class="ident">num_bindings</span>,
+                        <span class="ident">code</span>.<span class="ident">compile_environments</span>[<span class="number">1</span>].<span class="ident">clone</span>(),
+                        <span class="ident">this</span>,
+                        <span class="self">self</span>.<span class="ident">clone</span>(),
+                        <span class="prelude-val">None</span>,
+                        <span class="ident">lexical_this_mode</span>,
+                    );
+                } <span class="kw">else</span> {
+                    <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">push_function</span>(
+                        <span class="ident">code</span>.<span class="ident">num_bindings</span>,
+                        <span class="ident">code</span>.<span class="ident">compile_environments</span>[<span class="number">0</span>].<span class="ident">clone</span>(),
+                        <span class="ident">this</span>,
+                        <span class="self">self</span>.<span class="ident">clone</span>(),
+                        <span class="prelude-val">None</span>,
+                        <span class="ident">lexical_this_mode</span>,
                     );
                 }
 
@@ -1856,22 +2304,21 @@
                 <span class="kw">let</span> <span class="ident">param_count</span> <span class="op">=</span> <span class="ident">code</span>.<span class="ident">params</span>.<span class="ident">parameters</span>.<span class="ident">len</span>();
 
                 <span class="kw">let</span> <span class="ident">call_frame</span> <span class="op">=</span> <span class="ident">CallFrame</span> {
-                    <span class="ident">prev</span>: <span class="prelude-val">None</span>,
                     <span class="ident">code</span>,
-                    <span class="ident">this</span>,
                     <span class="ident">pc</span>: <span class="number">0</span>,
                     <span class="ident">catch</span>: <span class="ident">Vec::new</span>(),
                     <span class="ident">finally_return</span>: <span class="ident">FinallyReturn::None</span>,
                     <span class="ident">finally_jump</span>: <span class="ident">Vec::new</span>(),
                     <span class="ident">pop_on_return</span>: <span class="number">0</span>,
-                    <span class="ident">loop_env_stack</span>: <span class="macro">vec!</span>[<span class="number">0</span>],
-                    <span class="ident">try_env_stack</span>: <span class="macro">vec!</span>[<span class="ident"><span class="kw">crate</span>::vm::TryStackEntry</span> {
+                    <span class="ident">loop_env_stack</span>: <span class="ident">Vec::from</span>([<span class="number">0</span>]),
+                    <span class="ident">try_env_stack</span>: <span class="ident">Vec::from</span>([<span class="ident"><span class="kw">crate</span>::vm::TryStackEntry</span> {
                         <span class="ident">num_env</span>: <span class="number">0</span>,
                         <span class="ident">num_loop_stack_entries</span>: <span class="number">0</span>,
-                    }],
+                    }]),
                     <span class="ident">param_count</span>,
                     <span class="ident">arg_count</span>,
                     <span class="ident">generator_resume_kind</span>: <span class="ident">GeneratorResumeKind::Normal</span>,
+                    <span class="ident">thrown</span>: <span class="bool-val">false</span>,
                 };
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">stack</span> <span class="op">=</span> <span class="ident">args</span>;
 
@@ -1900,7 +2347,7 @@
                         <span class="ident">state</span>: <span class="ident">GeneratorState::SuspendedStart</span>,
                         <span class="ident">context</span>: <span class="prelude-val">Some</span>(<span class="ident">Gc::new</span>(<span class="ident">Cell::new</span>(<span class="ident">GeneratorContext</span> {
                             <span class="ident">environments</span>,
-                            <span class="ident">call_frame</span>: <span class="kw-2">*</span><span class="ident">call_frame</span>,
+                            <span class="ident">call_frame</span>,
                             <span class="ident">stack</span>,
                         }))),
                     }),
@@ -1918,50 +2365,83 @@
         <span class="ident">args</span>: <span class="kw-2">&amp;</span>[<span class="ident">JsValue</span>],
         <span class="ident">this_target</span>: <span class="kw-2">&amp;</span><span class="ident">JsValue</span>,
         <span class="ident">context</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Context</span>,
-    ) -&gt; <span class="ident">JsResult</span><span class="op">&lt;</span><span class="ident">JsValue</span><span class="op">&gt;</span> {
+    ) -&gt; <span class="ident">JsResult</span><span class="op">&lt;</span><span class="ident">JsObject</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">this_function_object</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">clone</span>();
-        <span class="comment">// let mut has_parameter_expressions = false;</span>
+
+        <span class="kw">let</span> <span class="ident">create_this</span> <span class="op">=</span> <span class="op">|</span><span class="ident">context</span><span class="op">|</span> {
+            <span class="kw">let</span> <span class="ident">prototype</span> <span class="op">=</span>
+                <span class="ident">get_prototype_from_constructor</span>(<span class="ident">this_target</span>, <span class="ident">StandardConstructors::object</span>, <span class="ident">context</span>)<span class="question-mark">?</span>;
+            <span class="prelude-val">Ok</span>(<span class="ident"><span class="self">Self</span>::from_proto_and_data</span>(<span class="ident">prototype</span>, <span class="ident">ObjectData::ordinary</span>()))
+        };
 
         <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_constructor</span>() {
             <span class="kw">return</span> <span class="ident">context</span>.<span class="ident">throw_type_error</span>(<span class="string">&quot;not a constructor function&quot;</span>);
         }
 
-        <span class="kw">let</span> <span class="ident">body</span> <span class="op">=</span> {
-            <span class="kw">let</span> <span class="ident">object</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">borrow</span>();
-            <span class="kw">let</span> <span class="ident">function</span> <span class="op">=</span> <span class="ident">object</span>.<span class="ident">as_function</span>().<span class="ident">expect</span>(<span class="string">&quot;not a function&quot;</span>);
+        <span class="kw">let</span> <span class="ident">object</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">borrow</span>();
+        <span class="kw">let</span> <span class="ident">function_object</span> <span class="op">=</span> <span class="ident">object</span>.<span class="ident">as_function</span>().<span class="ident">expect</span>(<span class="string">&quot;not a function&quot;</span>);
 
-            <span class="kw">match</span> <span class="ident">function</span> {
-                <span class="ident">Function::Native</span> { <span class="ident">function</span>, .. } =&gt; <span class="ident">FunctionBody::Native</span> {
-                    <span class="ident">function</span>: <span class="kw-2">*</span><span class="ident">function</span>,
-                },
-                <span class="ident">Function::Closure</span> {
-                    <span class="ident">function</span>, <span class="ident">captures</span>, ..
-                } =&gt; <span class="ident">FunctionBody::Closure</span> {
-                    <span class="ident">function</span>: <span class="ident">function</span>.<span class="ident">clone</span>(),
-                    <span class="ident">captures</span>: <span class="ident">captures</span>.<span class="ident">clone</span>(),
-                },
-                <span class="ident">Function::Ordinary</span> { <span class="ident">code</span>, <span class="ident">environments</span> } =&gt; <span class="ident">FunctionBody::Ordinary</span> {
-                    <span class="ident">code</span>: <span class="ident">code</span>.<span class="ident">clone</span>(),
-                    <span class="ident">environments</span>: <span class="ident">environments</span>.<span class="ident">clone</span>(),
-                },
-                <span class="ident">Function::Generator</span> { .. } =&gt; {
-                    <span class="macro">unreachable!</span>(<span class="string">&quot;generator function cannot be a constructor&quot;</span>)
+        <span class="kw">match</span> <span class="ident">function_object</span> {
+            <span class="ident">Function::Native</span> {
+                <span class="ident">function</span>,
+                <span class="ident">constructor</span>,
+                ..
+            } =&gt; {
+                <span class="kw">let</span> <span class="ident">function</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">function</span>;
+                <span class="kw">let</span> <span class="ident">constructor</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">constructor</span>;
+                <span class="ident">drop</span>(<span class="ident">object</span>);
+
+                <span class="kw">match</span> <span class="ident">function</span>(<span class="ident">this_target</span>, <span class="ident">args</span>, <span class="ident">context</span>)<span class="question-mark">?</span> {
+                    <span class="ident">JsValue::Object</span>(<span class="kw-2">ref</span> <span class="ident">o</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">o</span>.<span class="ident">clone</span>()),
+                    <span class="ident">val</span> =&gt; {
+                        <span class="kw">if</span> <span class="ident">constructor</span>.<span class="ident">expect</span>(<span class="string">&quot;hmm&quot;</span>).<span class="ident">is_base</span>() <span class="op">|</span><span class="op">|</span> <span class="ident">val</span>.<span class="ident">is_undefined</span>() {
+                            <span class="ident">create_this</span>(<span class="ident">context</span>)
+                        } <span class="kw">else</span> {
+                            <span class="ident">context</span>.<span class="ident">throw_type_error</span>(
+                                <span class="string">&quot;Derived constructor can only return an Object or undefined&quot;</span>,
+                            )
+                        }
+                    }
                 }
             }
-        };
-
-        <span class="kw">match</span> <span class="ident">body</span> {
-            <span class="ident">FunctionBody::Native</span> { <span class="ident">function</span>, .. } =&gt; <span class="ident">function</span>(<span class="ident">this_target</span>, <span class="ident">args</span>, <span class="ident">context</span>),
-            <span class="ident">FunctionBody::Closure</span> { <span class="ident">function</span>, <span class="ident">captures</span> } =&gt; {
-                (<span class="ident">function</span>)(<span class="ident">this_target</span>, <span class="ident">args</span>, <span class="ident">captures</span>, <span class="ident">context</span>)
-            }
-            <span class="ident">FunctionBody::Ordinary</span> {
-                <span class="ident">code</span>,
-                <span class="kw-2">mut</span> <span class="ident">environments</span>,
+            <span class="ident">Function::Closure</span> {
+                <span class="ident">function</span>,
+                <span class="ident">captures</span>,
+                <span class="ident">constructor</span>,
+                ..
             } =&gt; {
+                <span class="kw">let</span> <span class="ident">function</span> <span class="op">=</span> <span class="ident">function</span>.<span class="ident">clone</span>();
+                <span class="kw">let</span> <span class="ident">captures</span> <span class="op">=</span> <span class="ident">captures</span>.<span class="ident">clone</span>();
+                <span class="kw">let</span> <span class="ident">constructor</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">constructor</span>;
+                <span class="ident">drop</span>(<span class="ident">object</span>);
+
+                <span class="kw">match</span> (<span class="ident">function</span>)(<span class="ident">this_target</span>, <span class="ident">args</span>, <span class="ident">captures</span>, <span class="ident">context</span>)<span class="question-mark">?</span> {
+                    <span class="ident">JsValue::Object</span>(<span class="kw-2">ref</span> <span class="ident">o</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">o</span>.<span class="ident">clone</span>()),
+                    <span class="ident">val</span> =&gt; {
+                        <span class="kw">if</span> <span class="ident">constructor</span>.<span class="ident">expect</span>(<span class="string">&quot;hmma&quot;</span>).<span class="ident">is_base</span>() <span class="op">|</span><span class="op">|</span> <span class="ident">val</span>.<span class="ident">is_undefined</span>() {
+                            <span class="ident">create_this</span>(<span class="ident">context</span>)
+                        } <span class="kw">else</span> {
+                            <span class="ident">context</span>.<span class="ident">throw_type_error</span>(
+                                <span class="string">&quot;Derived constructor can only return an Object or undefined&quot;</span>,
+                            )
+                        }
+                    }
+                }
+            }
+            <span class="ident">Function::Ordinary</span> {
+                <span class="ident">code</span>,
+                <span class="ident">environments</span>,
+                <span class="ident">constructor_kind</span>,
+                ..
+            } =&gt; {
+                <span class="kw">let</span> <span class="ident">code</span> <span class="op">=</span> <span class="ident">code</span>.<span class="ident">clone</span>();
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">environments</span> <span class="op">=</span> <span class="ident">environments</span>.<span class="ident">clone</span>();
+                <span class="kw">let</span> <span class="ident">constructor_kind</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">constructor_kind</span>;
+                <span class="ident">drop</span>(<span class="ident">object</span>);
+
                 <span class="ident">std::mem::swap</span>(<span class="kw-2">&amp;mut</span> <span class="ident">environments</span>, <span class="kw-2">&amp;mut</span> <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>);
 
-                <span class="kw">let</span> <span class="ident">this</span> <span class="op">=</span> {
+                <span class="kw">let</span> <span class="ident">this</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">constructor_kind</span>.<span class="ident">is_base</span>() {
                     <span class="comment">// If the prototype of the constructor is not an object, then use the default object</span>
                     <span class="comment">// prototype as prototype for the new object</span>
                     <span class="comment">// see &lt;https://tc39.es/ecma262/#sec-ordinarycreatefromconstructor&gt;</span>
@@ -1973,27 +2453,32 @@
                     )<span class="question-mark">?</span>;
                     <span class="kw">let</span> <span class="ident">this</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::from_proto_and_data</span>(<span class="ident">prototype</span>, <span class="ident">ObjectData::ordinary</span>());
 
-                    <span class="comment">// Set computed class field names if they exist.</span>
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">fields</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">code</span>.<span class="ident">computed_field_names</span> {
-                        <span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">fields</span>.<span class="ident">borrow</span>().<span class="ident">iter</span>().<span class="ident">rev</span>() {
-                            <span class="ident">context</span>.<span class="ident">vm</span>.<span class="ident">push</span>(<span class="ident">key</span>);
-                        }
-                    }
+                    <span class="ident">initialize_instance_elements</span>(<span class="kw-2">&amp;</span><span class="ident">this</span>, <span class="self">self</span>, <span class="ident">context</span>)<span class="question-mark">?</span>;
 
-                    <span class="ident">this</span>
+                    <span class="prelude-val">Some</span>(<span class="ident">this</span>)
+                } <span class="kw">else</span> {
+                    <span class="prelude-val">None</span>
                 };
+
+                <span class="kw">let</span> <span class="ident">new_target</span> <span class="op">=</span> <span class="ident">this_target</span>.<span class="ident">as_object</span>().<span class="ident">expect</span>(<span class="string">&quot;must be object&quot;</span>);
 
                 <span class="kw">if</span> <span class="ident">code</span>.<span class="ident">params</span>.<span class="ident">has_expressions</span>() {
                     <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">push_function</span>(
                         <span class="ident">code</span>.<span class="ident">num_bindings</span>,
                         <span class="ident">code</span>.<span class="ident">compile_environments</span>[<span class="number">1</span>].<span class="ident">clone</span>(),
-                        <span class="ident">this</span>.<span class="ident">clone</span>().<span class="ident">into</span>(),
+                        <span class="ident">this</span>.<span class="ident">clone</span>().<span class="ident">map</span>(<span class="ident">Into::into</span>),
+                        <span class="self">self</span>.<span class="ident">clone</span>(),
+                        <span class="prelude-val">Some</span>(<span class="ident">new_target</span>.<span class="ident">clone</span>()),
+                        <span class="bool-val">false</span>,
                     );
                 } <span class="kw">else</span> {
                     <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">push_function</span>(
                         <span class="ident">code</span>.<span class="ident">num_bindings</span>,
                         <span class="ident">code</span>.<span class="ident">compile_environments</span>[<span class="number">0</span>].<span class="ident">clone</span>(),
-                        <span class="ident">this</span>.<span class="ident">clone</span>().<span class="ident">into</span>(),
+                        <span class="ident">this</span>.<span class="ident">clone</span>().<span class="ident">map</span>(<span class="ident">Into::into</span>),
+                        <span class="self">self</span>.<span class="ident">clone</span>(),
+                        <span class="prelude-val">Some</span>(<span class="ident">new_target</span>.<span class="ident">clone</span>()),
+                        <span class="bool-val">false</span>,
                     );
                 }
 
@@ -2052,49 +2537,133 @@
                 <span class="kw">let</span> <span class="ident">param_count</span> <span class="op">=</span> <span class="ident">code</span>.<span class="ident">params</span>.<span class="ident">parameters</span>.<span class="ident">len</span>();
 
                 <span class="ident">context</span>.<span class="ident">vm</span>.<span class="ident">push_frame</span>(<span class="ident">CallFrame</span> {
-                    <span class="ident">prev</span>: <span class="prelude-val">None</span>,
                     <span class="ident">code</span>,
-                    <span class="ident">this</span>: <span class="ident">this</span>.<span class="ident">into</span>(),
                     <span class="ident">pc</span>: <span class="number">0</span>,
                     <span class="ident">catch</span>: <span class="ident">Vec::new</span>(),
                     <span class="ident">finally_return</span>: <span class="ident">FinallyReturn::None</span>,
                     <span class="ident">finally_jump</span>: <span class="ident">Vec::new</span>(),
                     <span class="ident">pop_on_return</span>: <span class="number">0</span>,
-                    <span class="ident">loop_env_stack</span>: <span class="macro">vec!</span>[<span class="number">0</span>],
-                    <span class="ident">try_env_stack</span>: <span class="macro">vec!</span>[<span class="ident"><span class="kw">crate</span>::vm::TryStackEntry</span> {
+                    <span class="ident">loop_env_stack</span>: <span class="ident">Vec::from</span>([<span class="number">0</span>]),
+                    <span class="ident">try_env_stack</span>: <span class="ident">Vec::from</span>([<span class="ident"><span class="kw">crate</span>::vm::TryStackEntry</span> {
                         <span class="ident">num_env</span>: <span class="number">0</span>,
                         <span class="ident">num_loop_stack_entries</span>: <span class="number">0</span>,
-                    }],
+                    }]),
                     <span class="ident">param_count</span>,
                     <span class="ident">arg_count</span>,
                     <span class="ident">generator_resume_kind</span>: <span class="ident">GeneratorResumeKind::Normal</span>,
+                    <span class="ident">thrown</span>: <span class="bool-val">false</span>,
                 });
 
                 <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">context</span>.<span class="ident">run</span>();
 
-                <span class="kw">let</span> <span class="ident">frame</span> <span class="op">=</span> <span class="ident">context</span>.<span class="ident">vm</span>.<span class="ident">pop_frame</span>().<span class="ident">expect</span>(<span class="string">&quot;must have frame&quot;</span>);
+                <span class="ident">context</span>.<span class="ident">vm</span>.<span class="ident">pop_frame</span>();
 
-                <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">pop</span>();
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">environment</span> <span class="op">=</span> <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">pop</span>();
                 <span class="kw">if</span> <span class="ident">has_parameter_expressions</span> {
-                    <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">pop</span>();
+                    <span class="ident">environment</span> <span class="op">=</span> <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>.<span class="ident">pop</span>();
                 }
 
                 <span class="ident">std::mem::swap</span>(<span class="kw-2">&amp;mut</span> <span class="ident">environments</span>, <span class="kw-2">&amp;mut</span> <span class="ident">context</span>.<span class="ident">realm</span>.<span class="ident">environments</span>);
 
                 <span class="kw">let</span> (<span class="ident">result</span>, <span class="kw">_</span>) <span class="op">=</span> <span class="ident">result</span><span class="question-mark">?</span>;
 
-                <span class="kw">if</span> <span class="ident">result</span>.<span class="ident">is_object</span>() {
-                    <span class="prelude-val">Ok</span>(<span class="ident">result</span>)
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">result</span>) <span class="op">=</span> <span class="ident">result</span>.<span class="ident">as_object</span>() {
+                    <span class="prelude-val">Ok</span>(<span class="ident">result</span>.<span class="ident">clone</span>())
+                } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">this</span>) <span class="op">=</span> <span class="ident">this</span> {
+                    <span class="prelude-val">Ok</span>(<span class="ident">this</span>)
+                } <span class="kw">else</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">result</span>.<span class="ident">is_undefined</span>() {
+                    <span class="ident">context</span>.<span class="ident">throw_type_error</span>(<span class="string">&quot;Function constructor must not return non-object&quot;</span>)
                 } <span class="kw">else</span> {
-                    <span class="prelude-val">Ok</span>(<span class="ident">frame</span>.<span class="ident">this</span>.<span class="ident">clone</span>())
+                    <span class="kw">let</span> <span class="ident">function_env</span> <span class="op">=</span> <span class="ident">environment</span>
+                        .<span class="ident">slots</span>()
+                        .<span class="ident">expect</span>(<span class="string">&quot;must be function environment&quot;</span>)
+                        .<span class="ident">as_function_slots</span>()
+                        .<span class="ident">expect</span>(<span class="string">&quot;must be function environment&quot;</span>);
+                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">this_binding</span>) <span class="op">=</span> <span class="ident">function_env</span>.<span class="ident">borrow</span>().<span class="ident">get_this_binding</span>() {
+                        <span class="prelude-val">Ok</span>(<span class="ident">this_binding</span>
+                            .<span class="ident">as_object</span>()
+                            .<span class="ident">expect</span>(<span class="string">&quot;this binding must be object&quot;</span>)
+                            .<span class="ident">clone</span>())
+                    } <span class="kw">else</span> {
+                        <span class="comment">//context.throw_type_error(&quot;Function constructor must not return non-object&quot;)</span>
+                        <span class="ident">context</span>.<span class="ident">throw_reference_error</span>(<span class="string">&quot;Must call super constructor in derived class before accessing &#39;this&#39; or returning from derived constructor&quot;</span>)
+                    }
                 }
             }
-            <span class="ident">FunctionBody::Generator</span> { .. } =&gt; {
-                <span class="macro">unreachable!</span>(<span class="string">&quot;generator function cannot be a constructor&quot;</span>)
+            <span class="ident">Function::Generator</span> { .. } <span class="op">|</span> <span class="ident">Function::Async</span> { .. } =&gt; {
+                <span class="macro">unreachable!</span>(<span class="string">&quot;not a constructor&quot;</span>)
             }
         }
     }
 }
+
+<span class="doccomment">/// `InitializeInstanceElements ( O, constructor )`</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Add private methods and fields from a class constructor to an object.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// More information:</span>
+<span class="doccomment">///  - [ECMAScript specification][spec]</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// [spec]: https://tc39.es/ecma262/#sec-initializeinstanceelements</span>
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">initialize_instance_elements</span>(
+    <span class="ident">target</span>: <span class="kw-2">&amp;</span><span class="ident">JsObject</span>,
+    <span class="ident">constructor</span>: <span class="kw-2">&amp;</span><span class="ident">JsObject</span>,
+    <span class="ident">context</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Context</span>,
+) -&gt; <span class="ident">JsResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="kw">let</span> <span class="ident">constructor_borrow</span> <span class="op">=</span> <span class="ident">constructor</span>.<span class="ident">borrow</span>();
+    <span class="kw">let</span> <span class="ident">constructor_function</span> <span class="op">=</span> <span class="ident">constructor_borrow</span>
+        .<span class="ident">as_function</span>()
+        .<span class="ident">expect</span>(<span class="string">&quot;class constructor must be function object&quot;</span>);
+
+    <span class="kw">for</span> (<span class="ident">name</span>, <span class="ident">private_method</span>) <span class="kw">in</span> <span class="ident">constructor_function</span>.<span class="ident">get_private_methods</span>() {
+        <span class="kw">match</span> <span class="ident">private_method</span> {
+            <span class="ident">PrivateElement::Method</span>(<span class="kw">_</span>) =&gt; {
+                <span class="ident">target</span>
+                    .<span class="ident">borrow_mut</span>()
+                    .<span class="ident">set_private_element</span>(<span class="kw-2">*</span><span class="ident">name</span>, <span class="ident">private_method</span>.<span class="ident">clone</span>());
+            }
+            <span class="ident">PrivateElement::Accessor</span> { <span class="ident">getter</span>, <span class="ident">setter</span> } =&gt; {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">getter</span>) <span class="op">=</span> <span class="ident">getter</span> {
+                    <span class="ident">target</span>
+                        .<span class="ident">borrow_mut</span>()
+                        .<span class="ident">set_private_element_getter</span>(<span class="kw-2">*</span><span class="ident">name</span>, <span class="ident">getter</span>.<span class="ident">clone</span>());
+                }
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">setter</span>) <span class="op">=</span> <span class="ident">setter</span> {
+                    <span class="ident">target</span>
+                        .<span class="ident">borrow_mut</span>()
+                        .<span class="ident">set_private_element_setter</span>(<span class="kw-2">*</span><span class="ident">name</span>, <span class="ident">setter</span>.<span class="ident">clone</span>());
+                }
+            }
+            <span class="ident">PrivateElement::Field</span>(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
+        }
+    }
+
+    <span class="kw">for</span> <span class="ident">field</span> <span class="kw">in</span> <span class="ident">constructor_function</span>.<span class="ident">get_fields</span>() {
+        <span class="kw">match</span> <span class="ident">field</span> {
+            <span class="ident">ClassFieldDefinition::Public</span>(<span class="ident">name</span>, <span class="ident">function</span>) =&gt; {
+                <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">function</span>.<span class="ident">call</span>(<span class="kw-2">&amp;</span><span class="ident">target</span>.<span class="ident">clone</span>().<span class="ident">into</span>(), <span class="kw-2">&amp;</span>[], <span class="ident">context</span>)<span class="question-mark">?</span>;
+                <span class="ident">target</span>.<span class="ident">__define_own_property__</span>(
+                    <span class="ident">name</span>.<span class="ident">clone</span>(),
+                    <span class="ident">PropertyDescriptor::builder</span>()
+                        .<span class="ident">value</span>(<span class="ident">value</span>)
+                        .<span class="ident">writable</span>(<span class="bool-val">true</span>)
+                        .<span class="ident">enumerable</span>(<span class="bool-val">true</span>)
+                        .<span class="ident">configurable</span>(<span class="bool-val">true</span>)
+                        .<span class="ident">build</span>(),
+                    <span class="ident">context</span>,
+                )<span class="question-mark">?</span>;
+            }
+            <span class="ident">ClassFieldDefinition::Private</span>(<span class="ident">name</span>, <span class="ident">function</span>) =&gt; {
+                <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">function</span>.<span class="ident">call</span>(<span class="kw-2">&amp;</span><span class="ident">target</span>.<span class="ident">clone</span>().<span class="ident">into</span>(), <span class="kw-2">&amp;</span>[], <span class="ident">context</span>)<span class="question-mark">?</span>;
+                <span class="ident">target</span>
+                    .<span class="ident">borrow_mut</span>()
+                    .<span class="ident">set_private_element</span>(<span class="kw-2">*</span><span class="ident">name</span>, <span class="ident">PrivateElement::Field</span>(<span class="ident">value</span>));
+            }
+        }
+    }
+
+    <span class="prelude-val">Ok</span>(())
+}
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="boa_engine" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="boa_engine" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
 </body></html>
