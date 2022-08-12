@@ -867,7 +867,7 @@ impl ContextBuilder {
             console: Console::default(),
             intrinsics: Intrinsics::default(),
             vm: Vm {
-                frame: None,
+                frames: Vec::with_capacity(16),
                 stack: Vec::with_capacity(1024),
                 trace: false,
                 stack_size_limit: 1024,
